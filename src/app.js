@@ -135,6 +135,8 @@ class Battle {
     this.monster=candidates[Math.floor(Math.random()*candidates.length)] || MONSTERS[0];
     this.el.enemyImg.src=monsterUrl(this.monster); this.el.enemyImg.alt='迫ってくるモンスター';
     this.el.enemy.className='enemy-slot';
+    this.el.player.className='player-slot';
+    this.el.playerImg.src=charUrl(this.character);
     this.el.kana.textContent=this.question.kana;
     this.el.romaji.textContent=this.mode==='master'?'':this.question.display;
     this.el.hint.textContent='';
@@ -191,13 +193,15 @@ class Battle {
     if(retryCleared){this.learned.unshift(`${this.question.kana}＝${this.question.display}`); this.learned=this.learned.slice(0,3); this.flash('RETRY CLEAR!');}
     this.el.enemy.classList.add('hit');
     const state=this.combo>=10&&this.combo%5===0?'special':this.combo===5?'attack':null;
-    if(state) this.playerAction(state); else { this.el.player.classList.add('action'); setTimeout(()=>this.el.player?.classList.remove('action'),260); }
+    if(state) this.playerAction(state); else this.el.player.classList.add('action');
     state==='special'?audio.special():audio.attack(); audio.defeat(); this.floatScore(gained,multiplier);
-    this.timer=setTimeout(()=>this.nextQuestion(),320);
+    const feedbackTime=state==='special'?820:state==='attack'?650:380;
+    this.timer=setTimeout(()=>this.nextQuestion(),feedbackTime);
   }
   playerAction(state){
-    this.el.playerImg.src=charUrl(this.character,state); this.el.player.classList.add('action');
-    setTimeout(()=>{if(this.el?.playerImg){this.el.playerImg.src=charUrl(this.character);this.el.player.classList.remove('action');}},310);
+    this.el.playerImg.src=charUrl(this.character,state);
+    this.el.player.classList.remove('action','special-action','damage');
+    this.el.player.classList.add(state==='damage'?'damage':state==='special'?'special-action':'action');
   }
   floatScore(score,multiplier){
     const el=document.createElement('div'); el.className='float-score'; el.textContent=`+${score}  ×${multiplier.toFixed(1)}`; this.el.arena.append(el); setTimeout(()=>el.remove(),600);

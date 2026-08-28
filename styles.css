@@ -105,13 +105,15 @@ h1 { margin: 0; font-size: clamp(2rem, 4.5vw, 4.25rem); line-height: .98; letter
 .arena::after { content:""; position:absolute; inset:0; z-index:-1; background: linear-gradient(180deg, rgba(7,22,47,.08), rgba(7,22,47,.4)); }
 .attack-line { position: absolute; left: 7%; right: 7%; bottom: 23%; border-top: 2px dashed rgba(255,118,139,.6); filter: drop-shadow(0 0 6px rgba(255,50,90,.4)); }
 .attack-line::after { content:"こうげきライン"; position:absolute; right:0; top:4px; color:#ffd3da; font-size:.7rem; font-weight:900; }
-.enemy-slot { position:absolute; z-index:2; top:1%; left:50%; width: clamp(110px,18vh,190px); height: clamp(110px,18vh,190px); transform: translateX(-50%); will-change: transform; }
+.enemy-slot { position:absolute; z-index:2; top:1%; left:50%; width:clamp(145px,25vh,265px); height:clamp(145px,25vh,265px); transform:translateX(-50%); will-change:transform; }
 .enemy-slot img { width:100%; height:100%; object-fit:contain; filter: drop-shadow(0 10px 8px rgba(0,0,0,.38)); }
 .enemy-slot.hit { animation: enemy-hit .34s ease-out; }
 .enemy-slot.attack { animation: enemy-attack .26s ease-in-out; }
-.player-slot { position:absolute; z-index:2; bottom:1%; left:7%; width:clamp(115px,21vh,210px); height:clamp(115px,21vh,210px); }
+.player-slot { position:absolute; z-index:2; bottom:0; left:5%; width:clamp(155px,28vh,295px); height:clamp(155px,28vh,295px); }
 .player-slot img { width:100%; height:100%; object-fit:contain; object-position:bottom; filter:drop-shadow(0 10px 9px rgba(0,0,0,.38)); }
-.player-slot.action { animation: player-action .38s ease-out; }
+.player-slot.action { animation:player-action .48s ease-out both; }
+.player-slot.special-action { animation:player-special .68s cubic-bezier(.2,.9,.25,1) both; }
+.player-slot.damage { animation:player-damage .42s ease-out both; }
 
 .problem-card {
   position:absolute; z-index:5; left:50%; top:46%; transform:translate(-50%,-50%); width:min(580px,56vw);
@@ -152,6 +154,8 @@ h1 { margin: 0; font-size: clamp(2rem, 4.5vw, 4.25rem); line-height: .98; letter
 @keyframes enemy-hit { to { transform:translate(-50%,-120px) rotate(16deg) scale(.55); opacity:0; } }
 @keyframes enemy-attack { 50% { transform:translate(-50%,25px) scale(1.12); } }
 @keyframes player-action { 45% { transform:translate(32px,-12px) scale(1.12); } }
+@keyframes player-special { 45% { transform:translate(48px,-24px) scale(1.2); filter:drop-shadow(0 0 18px #9beeff); } }
+@keyframes player-damage { 35% { transform:translate(-18px,8px) rotate(-4deg); } 70% { transform:translate(7px,0) rotate(2deg); } }
 @keyframes score-float { to { transform:translateY(-55px); opacity:0; } }
 @keyframes pulse { to { filter:brightness(1.45); transform:scale(1.04); } }
 
@@ -172,7 +176,8 @@ h1 { margin: 0; font-size: clamp(2rem, 4.5vw, 4.25rem); line-height: .98; letter
   .hud { grid-template-columns:repeat(4,1fr) auto; }
   .hud-stat:first-child { display:none; }
   .problem-card { width:86vw; }
-  .player-slot { width:105px; height:105px; }
+  .player-slot { width:130px; height:130px; }
+  .enemy-slot { width:150px; height:150px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
