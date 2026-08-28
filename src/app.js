@@ -27,6 +27,7 @@ function rangeOptions(mode) {
 function renderStart() {
   game?.destroy(); game=null;
   const acquired=new Set(data.badges);
+  const training=trainingQuestions();
   app.innerHTML=`
     <section class="screen start-screen">
       <div class="start-shell">
@@ -50,6 +51,13 @@ function renderStart() {
           </div>
           <button class="start-button" id="start-game">60秒バトル START!</button>
         </section>
+        <section class="training-panel">
+          <div class="training-copy">
+            <span class="training-icon" aria-hidden="true">⚔️</span>
+            <div><span class="section-label">苦手ローマ字特訓</span><strong>${training.fallback?'まずは基礎を練習しよう！':`苦手候補 ${training.weakCount}こ`}</strong><p>${training.fallback?'プレイすると、きみに合った問題へ変わります。':'苦手だった問題を、仲間と何度でも練習できます。'}</p></div>
+          </div>
+          <button class="training-start" id="start-training">時間無制限で特訓する</button>
+        </section>
         <details class="collection">
           <summary><span>🏅 バッジコレクション</span><span>${acquired.size} / ${BADGES.length}</span></summary>
           <div class="badge-grid">${BADGES.map(b=>{const got=acquired.has(b.id);return `<div class="badge ${got?'':'locked'}" title="${escapeHtml(b.desc)}"><div class="badge-frame">${got?`<img loading="lazy" src="${b.image}" alt="${escapeHtml(b.name)}">`:'<span class="badge-silhouette" aria-hidden="true">?</span>'}</div><span class="badge-name">${got?escapeHtml(b.name):'？？？'}</span></div>`;}).join('')}</div>
@@ -66,6 +74,7 @@ function renderStart() {
   app.querySelector('#range-select').onchange=e=>setup.range=e.target.value;
   app.querySelector('#sound-toggle').onclick=()=>{ data.sound=!data.sound; audio.setEnabled(data.sound); Storage.save(data); renderStart(); };
   app.querySelector('#start-game').onclick=()=>{ audio.ensure(); startGame(); };
+  app.querySelector('#start-training').onclick=()=>{ audio.ensure(); startTraining(training); };
 }
 
 function questionPool() {
@@ -76,6 +85,35 @@ function questionPool() {
   return WORDS.filter(w=>setup.range==='all'||w.level===setup.range).map(w=>makeQuestion(w.kana,{kind:'word',level:w.level}));
 }
 
+function trainingQuestions() {
+  const allKana=[...new Set([...Object.values(KANA_RANGES).flat(),...WORDS.map(w=>w.kana)])];
+  const all=allKana.map(kana=>makeQuestion(kana,{kind:'training'}));
+  const byKana=new Map(all.map(q=>[q.kana,q]));
+  const byDisplay=new Map(all.map(q=>[q.display,q]));
+  const picked=new Map();
+
+  for(const item of data.reviewQueue) {
+    const q=byKana.get(item.kana)||makeQuestion(item.kana,{kind:'training'});
+    picked.set(q.id,{q,score:100+(item.needs||0)*10});
+  }
+  for(const [display,stat] of Object.entries(data.romajiStats)) {
+    const attempts=stat.attempts||0;
+    if(!attempts) continue;
+    const rate=(stat.successes||0)/attempts;
+    if(rate>=.85 && !(stat.hints||0)) continue;
+    const q=(stat.kana&&byKana.get(stat.kana))||byDisplay.get(display);
+    if(!q) continue;
+    const score=(1-rate)*80+(stat.hints||0)*8+Math.min(15,attempts);
+    const old=picked.get(q.id);
+    if(!old||score>old.score) picked.set(q.id,{q,score});
+  }
+
+  const weak=[...picked.values()].sort((a,b)=>b.score-a.score).slice(0,20).map(x=>x.q);
+  if(weak.length) return {pool:weak,weakCount:weak.length,fallback:false};
+  const basics=['し','ち','つ','ふ','じ','しゃ','ちゃ','きって','がっこう','でんしゃ'];
+  return {pool:basics.map(kana=>makeQuestion(kana,{kind:'training'})),weakCount:0,fallback:true};
+}
+
 function startGame() {
   const character=characterById(setup.character);
   preloadBattleAssets(character);
@@ -84,8 +122,116 @@ function startGame() {
   game.countdown();
 }
 
+function startTraining(selection=trainingQuestions()) {
+  const character=characterById(setup.character);
+  const partners=CHARACTERS.filter(c=>c.id!==character.id);
+  const partner=partners[Math.floor(Math.random()*partners.length)];
+  preloadBattleAssets(character);
+  preloadBattleAssets(partner);
+  game=new Training({character,partner,pool:selection.pool,weakCount:selection.weakCount,fallback:selection.fallback});
+  game.render();
+}
+
 function preloadBattleAssets(character) {
   ['stand','attack','damage','special'].forEach(state=>{const image=new Image();image.decoding='async';image.src=charUrl(character,state);});
+}
+
+function shuffled(items) {
+  const result=[...items];
+  for(let i=result.length-1;i>0;i--) {
+    const j=Math.floor(Math.random()*(i+1));
+    [result[i],result[j]]=[result[j],result[i]];
+  }
+  return result;
+}
+
+class Training {
+  constructor(config) {
+    Object.assign(this,config);
+    this.queue=shuffled(this.pool); this.index=0; this.seen={}; this.question=null; this.typed='';
+    this.correctKeys=0; this.mistypes=0; this.clears=0; this.streak=0; this.rescues=0;
+    this.guided=false; this.rescued=false; this.questionMisses=0; this.running=true; this.locked=false; this.timer=0;
+    this.keyHandler=e=>this.onKey(e);
+  }
+  render() {
+    const background=BATTLE_BACKGROUNDS[Math.floor(Math.random()*BATTLE_BACKGROUNDS.length)]||BATTLE_BACKGROUNDS[0];
+    app.innerHTML=`<section class="screen battle-screen training-screen">
+      <header class="hud training-hud">
+        <div class="hud-stat"><span class="hud-label">MODE</span><span class="hud-value">苦手特訓</span></div>
+        <div class="hud-stat"><span class="hud-label">CLEAR</span><span id="training-clears" class="hud-value">0</span></div>
+        <div class="hud-stat"><span class="hud-label">れんぞく</span><span id="training-streak" class="hud-value">0</span></div>
+        <div class="hud-stat"><span class="hud-label">もんだい</span><span class="hud-value">${this.pool.length}こ</span></div>
+      </header>
+      <div class="arena training-arena" style="background-image:url('${ASSET_BASE}/backgrounds/${background}.webp')">
+        <div class="battle-ground" aria-hidden="true"></div>
+        <div class="player-slot training-player" id="training-player"><img src="${charUrl(this.character)}" alt="${this.character.name}・${this.character.job}"></div>
+        <div class="training-partner" id="training-partner"><img src="${charUrl(this.partner)}" alt="特訓相手の${this.partner.name}・${this.partner.job}"><span>${this.partner.name}と特訓！</span></div>
+        <div class="problem-card training-problem" id="problem-card">
+          <span class="mode-chip">時間制限なし</span>
+          <div class="kana" id="kana"></div><div class="romaji" id="romaji"></div><div class="input-progress" id="input"></div>
+          <div class="hint-note" id="hint"></div>
+          <button class="training-stop" id="stop-training">特訓をやめる</button>
+        </div>
+        <div class="training-message" id="training-message">${this.fallback?'基礎データからスタート！':'苦手をいっしょに克服しよう！'}</div>
+      </div>
+    </section>`;
+    this.el={card:app.querySelector('#problem-card'),kana:app.querySelector('#kana'),romaji:app.querySelector('#romaji'),input:app.querySelector('#input'),hint:app.querySelector('#hint'),clears:app.querySelector('#training-clears'),streak:app.querySelector('#training-streak'),player:app.querySelector('#training-player'),partner:app.querySelector('#training-partner'),message:app.querySelector('#training-message')};
+    app.querySelector('#stop-training').onclick=()=>this.stop();
+    window.addEventListener('keydown',this.keyHandler);
+    this.nextQuestion();
+    this.timer=setTimeout(()=>{if(this.el.message)this.el.message.textContent='';},1800);
+  }
+  nextQuestion() {
+    if(!this.running) return;
+    if(this.index>=this.queue.length) {this.queue=shuffled(this.pool);this.index=0;}
+    this.question=this.queue[this.index++]; this.typed=''; this.questionMisses=0; this.rescued=false; this.locked=false;
+    this.guided=!(this.seen[this.question.id]>0); this.seen[this.question.id]=(this.seen[this.question.id]||0)+1;
+    this.el.card.classList.remove('shake','training-clear');
+    this.el.player.classList.remove('training-cheer'); this.el.partner.classList.remove('training-cheer');
+    this.el.kana.textContent=this.question.kana;
+    this.el.romaji.textContent=this.guided?this.question.display:'';
+    this.el.hint.textContent=this.guided?'まずは見ながら打ってみよう':'思い出して打ってみよう（3回まちがえると答えが出るよ）';
+    this.updateInput();
+  }
+  onKey(e) {
+    if(!this.running||this.locked||e.ctrlKey||e.metaKey||e.altKey||e.isComposing) return;
+    if(e.key.length!==1||!/[a-z']/i.test(e.key)) return;
+    e.preventDefault();
+    const result=typeKey(this.question,this.typed,e.key);
+    if(!result.ok) {
+      this.mistypes++; data.totals.mistypes++; this.questionMisses++; this.streak=0; this.el.streak.textContent='0'; audio.miss();
+      this.el.card.classList.remove('shake'); void this.el.card.offsetWidth; this.el.card.classList.add('shake');
+      if(!this.guided&&!this.rescued&&this.questionMisses>=3) {
+        this.rescued=true; this.rescues++; data.totals.hints++;
+        this.el.romaji.textContent=this.question.display; this.el.hint.textContent='答えを見ながら、最後まで自分で打とう！';
+      }
+      Storage.save(data); return;
+    }
+    this.typed=result.value; this.correctKeys++; data.totals.totalKeys++; audio.key(); this.updateInput(); Storage.save(data);
+    if(result.complete) this.completeQuestion();
+  }
+  updateInput() {
+    const showRemaining=this.guided||this.rescued;
+    const remaining=showRemaining?this.question.display.slice(Math.min(this.typed.length,this.question.display.length)):'';
+    this.el.input.innerHTML=`<span class="typed">${escapeHtml(this.typed)}</span><span class="remaining">${escapeHtml(remaining)}</span>`;
+  }
+  completeQuestion() {
+    this.locked=true; this.clears++; this.streak++; this.el.clears.textContent=this.clears; this.el.streak.textContent=this.streak;
+    recordQuestion(data,this.question,true,this.rescued);
+    if(this.question.kana.includes('っ')) data.totals.sokuon++;
+    if(/[ゃゅょ]/.test(this.question.kana)) data.totals.youon++;
+    const retryCleared=!this.guided&&!this.rescued&&reviewSuccess(data,this.question);
+    this.el.card.classList.add('training-clear'); this.el.player.classList.add('training-cheer'); this.el.partner.classList.add('training-cheer');
+    this.el.hint.textContent=retryCleared?'RETRY CLEAR! 苦手をひとつ克服！':this.rescued?'できた！次は答えなしで挑戦！':'NICE!';
+    audio.defeat(); Storage.save(data);
+    this.timer=setTimeout(()=>this.nextQuestion(),520);
+  }
+  stop() {
+    if(!this.running) return;
+    this.running=false; clearTimeout(this.timer); window.removeEventListener('keydown',this.keyHandler);
+    awardBadges(); Storage.save(data); renderStart();
+  }
+  destroy() {this.running=false;clearTimeout(this.timer);window.removeEventListener('keydown',this.keyHandler);}
 }
 
 class Battle {

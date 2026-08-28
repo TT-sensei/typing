@@ -26,6 +26,7 @@ export const Storage={
 export function recordQuestion(data, q, success, usedHint=false) {
   const key=q.display;
   const stat=data.romajiStats[key] || {attempts:0,successes:0,hints:0,lastSeen:0};
+  stat.kana=q.kana;
   stat.attempts++;
   if(success) stat.successes++;
   if(usedHint) stat.hints++;
