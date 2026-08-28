@@ -1,5 +1,5 @@
-import { ASSET_BASE, BADGES, CHARACTERS, KANA_RANGES, MODE_INFO, MONSTERS, ROMAJI, WORDS } from './data.js';
-import { acceptedRomaji, displayRomaji, hintPattern, makeQuestion, typeKey } from './romaji.js';
+import { ASSET_BASE, BADGES, CHARACTERS, KANA_RANGES, MODE_INFO, MONSTERS, WORDS } from './data.js';
+import { makeQuestion, typeKey } from './romaji.js';
 import { Storage, enqueueReview, recordQuestion, reviewSuccess } from './storage.js';
 import { AudioSystem } from './audio.js';
 
@@ -50,7 +50,7 @@ function renderStart() {
         </section>
         <details class="collection">
           <summary><span>🏅 バッジコレクション</span><span>${acquired.size} / ${BADGES.length}</span></summary>
-          <div class="badge-grid">${BADGES.map(b=>`<div class="badge ${acquired.has(b.id)?'':'locked'}" title="${escapeHtml(b.desc)}"><div class="badge-frame"><img loading="lazy" src="${b.image}" alt="${acquired.has(b.id)?escapeHtml(b.name):'未取得バッジ'}"></div><span class="badge-name">${acquired.has(b.id)?escapeHtml(b.name):'？？？'}</span></div>`).join('')}</div>
+          <div class="badge-grid">${BADGES.map(b=>{const got=acquired.has(b.id);return `<div class="badge ${got?'':'locked'}" title="${escapeHtml(b.desc)}"><div class="badge-frame">${got?`<img loading="lazy" src="${b.image}" alt="${escapeHtml(b.name)}">`:'<span class="badge-silhouette" aria-hidden="true">?</span>'}</div><span class="badge-name">${got?escapeHtml(b.name):'？？？'}</span></div>`;}).join('')}</div>
         </details>
       </div>
     </section>`;
@@ -75,9 +75,16 @@ function questionPool() {
 }
 
 function startGame() {
-  game=new Battle({mode:setup.mode,range:setup.range,character:characterById(setup.character),pool:questionPool()});
+  const character=characterById(setup.character);
+  preloadBattleAssets(character);
+  game=new Battle({mode:setup.mode,range:setup.range,character,pool:questionPool()});
   game.render();
   game.countdown();
+}
+
+function preloadBattleAssets(character) {
+  ['stand','attack','damage','special'].forEach(state=>{const image=new Image();image.decoding='async';image.src=charUrl(character,state);});
+  MONSTERS.slice(0,8).forEach(id=>{const image=new Image();image.decoding='async';image.src=monsterUrl(id);});
 }
 
 class Battle {
@@ -85,7 +92,7 @@ class Battle {
     Object.assign(this,config);
     this.duration=60000; this.hp=5; this.score=0; this.combo=0; this.maxCombo=0; this.correctKeys=0; this.mistypes=0; this.kills=0; this.hints=0; this.hits=0;
     this.usedHint=false; this.hintStage=0; this.typed=''; this.lastQuestion=null; this.learned=[]; this.running=false; this.locked=true; this.newBadges=[];
-    this.startedAt=0; this.qStartedAt=0; this.qDuration=0; this.qStartY=0; this.qTargetY=0; this.raf=0; this.timer=0;
+    this.startedAt=0; this.qStartedAt=0; this.qDuration=0; this.qStartY=0; this.qTargetY=0; this.raf=0; this.timer=0; this.lastVisualFrame=0; this.lastTimePaint=0;
     this.keyHandler=e=>this.onKey(e);
   }
   render() {
@@ -149,14 +156,15 @@ class Battle {
   }
   frame(now=performance.now()){
     if(!this.running) return;
+    if(now-this.lastVisualFrame<33){this.raf=requestAnimationFrame(t=>this.frame(t));return;}
+    this.lastVisualFrame=now;
     const elapsed=now-this.startedAt, left=Math.max(0,this.duration-elapsed);
-    this.el.time.textContent=(left/1000).toFixed(1);
+    if(now-this.lastTimePaint>90){this.el.time.textContent=(left/1000).toFixed(1);this.lastTimePaint=now;}
     if(left<=0){this.finish('TIME UP!');return;}
     if(!this.locked) {
       const p=Math.min(1,(now-this.qStartedAt)/this.qDuration);
       this.positionEnemy(p);
-      if(this.mode==='master' && this.hintStage===0 && p>.55) this.showHint(1);
-      if(this.mode==='master' && this.hintStage===1 && p>.82) this.showHint(2);
+      if(this.mode==='master' && this.hintStage===0 && p>.42) this.showHint(2);
       if(p>=1) this.enemyReached();
     }
     this.raf=requestAnimationFrame(t=>this.frame(t));
@@ -164,9 +172,9 @@ class Battle {
   positionEnemy(p){ const y=this.qStartY+(this.qTargetY-this.qStartY)*p; this.el.enemy.style.transform=`translate(-50%, ${y}px)`; }
   showHint(stage){
     if(!this.usedHint) this.hints++;
-    this.hintStage=stage; this.usedHint=true;
-    if(stage===1){this.el.romaji.textContent=hintPattern(this.question.display); this.el.hint.textContent='ヒント：はじめの文字を見よう';}
-    else {this.el.romaji.textContent=this.question.display; this.el.hint.textContent='見ながら最後まで打てば大丈夫！';}
+    this.hintStage=2; this.usedHint=true;
+    this.el.romaji.textContent=this.question.display;
+    this.el.hint.textContent='ヒント：見ながら最後まで打てば大丈夫！';
   }
   onKey(e){
     if(!this.running||this.locked||e.ctrlKey||e.metaKey||e.altKey||e.isComposing) return;
@@ -193,10 +201,10 @@ class Battle {
     const retryCleared=!this.usedHint&&reviewSuccess(data,this.question);
     if(retryCleared){this.learned.unshift(`${this.question.kana}＝${this.question.display}`); this.learned=this.learned.slice(0,3); this.flash('RETRY CLEAR!');}
     this.el.enemy.classList.add('hit');
-    const state=this.combo>=10&&this.combo%5===0?'special':this.combo===5?'attack':null;
-    if(state) this.playerAction(state); else this.el.player.classList.add('action');
+    const state=this.combo>=10&&this.combo%5===0?'special':'attack';
+    this.playerAction(state);
     state==='special'?audio.special():audio.attack(); audio.defeat(); this.floatScore(gained,multiplier);
-    const feedbackTime=state==='special'?820:state==='attack'?650:380;
+    const feedbackTime=state==='special'?820:650;
     this.timer=setTimeout(()=>this.nextQuestion(),feedbackTime);
   }
   playerAction(state){
@@ -214,7 +222,7 @@ class Battle {
     this.locked=true; this.hp--; this.hits++; this.combo=0; this.el.combo.textContent='0'; this.el.hp.textContent=Array.from({length:5},(_,i)=>i<this.hp?'♥':'♡').join(' ');
     this.el.enemy.classList.add('attack'); audio.damage(); this.playerAction('damage');
     recordQuestion(data,this.question,false,this.usedHint); enqueueReview(data,this.question,this.kills+3+Math.floor(Math.random()*3));
-    if(this.mode==='master') this.showHint(Math.min(2,Math.max(1,this.hintStage+1)));
+    if(this.mode==='master') this.showHint(2);
     this.typed=''; this.updateInput();
     if(this.hp<=0){this.timer=setTimeout(()=>this.finish('GAME OVER'),500);return;}
     this.timer=setTimeout(()=>this.nextQuestion(true),480);
