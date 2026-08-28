@@ -1,0 +1,1 @@
+{"name":"romaji-typing-battle","version":"1.0.0","private":true,"type":"module","scripts":{"test":"node --test","check":"node --check src/data.js && node --check src/romaji.js && node --check src/storage.js && node --check src/audio.js && node --check src/app.js"}}
