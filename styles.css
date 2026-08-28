@@ -125,7 +125,7 @@ h1 { margin: 0; font-size: clamp(2rem, 4.5vw, 4.25rem); line-height: .98; letter
 .enemy-slot.evolved { width:clamp(175px,29vh,310px); height:clamp(175px,29vh,310px); }
 .enemy-slot.boss { width:clamp(210px,34vh,360px); height:clamp(210px,34vh,360px); }
 .enemy-slot img { width:100%; height:100%; object-fit:contain; filter: drop-shadow(0 10px 8px rgba(0,0,0,.38)); }
-.enemy-slot.hit { animation: enemy-hit .34s ease-out; }
+.enemy-slot.hit { animation: enemy-hit .42s cubic-bezier(.18,.72,.22,1) both; }
 .enemy-slot.attack { animation: enemy-attack .26s ease-in-out; }
 .player-slot { position:absolute; z-index:2; bottom:3%; left:9%; width:clamp(190px,35vh,380px); height:clamp(190px,35vh,380px); }
 .player-slot img { width:100%; height:100%; object-fit:contain; object-position:bottom; filter:drop-shadow(0 10px 9px rgba(0,0,0,.38)); }
@@ -173,6 +173,21 @@ h1 { margin: 0; font-size: clamp(2rem, 4.5vw, 4.25rem); line-height: .98; letter
 .battle-message { position:absolute; z-index:9; left:50%; top:18%; transform:translateX(-50%); color:white; font-size:clamp(1.5rem,5vw,3.6rem); font-weight:1000; text-shadow:0 4px 0 #10254c, 0 0 22px #67e8f9; pointer-events:none; }
 .countdown { inset:0; top:0; display:grid; place-items:center; transform:none; background:rgba(4,17,38,.42); font-size:clamp(4rem,15vw,10rem); }
 .float-score { position:absolute; z-index:12; left:55%; top:58%; color:var(--gold); font-size:1.5rem; font-weight:1000; animation:score-float .55s ease-out forwards; }
+.slash-burst {
+  position:absolute; z-index:13; width:clamp(130px,19vw,250px); height:clamp(90px,14vw,180px);
+  transform:translate(-50%,-50%) rotate(-18deg); pointer-events:none; animation:slash-pop .42s ease-out both;
+}
+.slash-burst::before, .slash-burst::after {
+  content:""; position:absolute; left:4%; right:4%; top:38%; height:9px; border-radius:999px;
+  background:linear-gradient(90deg,transparent,#dfffff 18%,#fff 50%,#73e8ff 82%,transparent);
+  box-shadow:0 0 8px #fff,0 0 18px #62dcff; transform:skewX(-28deg);
+}
+.slash-burst::after { top:58%; left:18%; right:-4%; height:6px; transform:skewX(-28deg) rotate(5deg); animation:slash-second .3s .035s ease-out both; }
+.slash-burst span {
+  position:absolute; right:-8%; top:4%; color:white; font-size:clamp(1rem,2.5vw,1.8rem); font-weight:1000;
+  letter-spacing:.04em; text-shadow:0 3px 0 #18588a,0 0 12px #77e9ff; transform:rotate(18deg);
+}
+.slash-burst.special::before { height:12px; box-shadow:0 0 10px #fff,0 0 26px #67e8f9,0 0 38px #ffd45c; }
 
 .result-screen { min-height:100svh; display:grid; place-items:center; padding:18px; background:linear-gradient(rgba(6,20,45,.68),#07162f), url("https://tt-sensei.github.io/navi-character-/assets/web/fantasy/backgrounds/sky-island.webp") center/cover; }
 .result-card { width:min(760px,100%); border:1px solid var(--line); border-radius:28px; background:rgba(6,24,54,.92); box-shadow:var(--shadow); padding:clamp(22px,4vw,42px); text-align:center; }
@@ -194,13 +209,18 @@ h1 { margin: 0; font-size: clamp(2rem, 4.5vw, 4.25rem); line-height: .98; letter
 .secondary { border:1px solid var(--line); color:white; background:#143762; }
 
 @keyframes shake { 25%{transform:translate(calc(-50% - 7px),-50%)} 75%{transform:translate(calc(-50% + 7px),-50%)} }
-@keyframes enemy-hit { to { transform:translate3d(calc(var(--enemy-x) + 190px),-35px,0) rotate(16deg) scale(.55); opacity:0; } }
+@keyframes enemy-hit {
+  18% { transform:translate3d(calc(var(--enemy-x) - 14px),8px,0) rotate(-5deg) scale(var(--enemy-scale)); filter:brightness(1.8); }
+  100% { transform:translate3d(calc(var(--enemy-x) + clamp(210px,28vw,430px)),-170px,0) rotate(30deg) scale(.42); opacity:0; }
+}
 @keyframes enemy-attack { 50% { transform:translate3d(calc(var(--enemy-x) - 34px),0,0) scale(1.15); } }
 @keyframes player-action { 45% { transform:translate(72px,-9px) scale(1.13); } }
 @keyframes player-special { 45% { transform:translate(96px,-20px) scale(1.2); filter:drop-shadow(0 0 18px #9beeff); } }
 @keyframes player-damage { 35% { transform:translate(-18px,8px) rotate(-4deg); } 70% { transform:translate(7px,0) rotate(2deg); } }
 @keyframes training-cheer { 45% { transform:translateY(-16px) scale(1.06); } }
 @keyframes score-float { to { transform:translateY(-55px); opacity:0; } }
+@keyframes slash-pop { 0%{opacity:0;transform:translate(-58%,-48%) rotate(-18deg) scale(.45)} 22%{opacity:1;transform:translate(-50%,-50%) rotate(-18deg) scale(1.08)} 100%{opacity:0;transform:translate(-38%,-58%) rotate(-18deg) scale(1.2)} }
+@keyframes slash-second { from{opacity:0;transform:translateX(-25px) skewX(-28deg) rotate(5deg) scaleX(.35)} to{opacity:1;transform:translateX(0) skewX(-28deg) rotate(5deg) scaleX(1)} }
 @keyframes pulse { to { filter:brightness(1.45); transform:scale(1.04); } }
 
 @media (max-width: 780px) {

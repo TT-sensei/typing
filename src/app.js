@@ -383,6 +383,7 @@ class Battle {
     this.el.enemy.classList.add('hit');
     const state=this.combo>=10&&this.combo%5===0?'special':'attack';
     this.playerAction(state);
+    this.slashEffect(state==='special');
     state==='special'?audio.special():audio.attack(); audio.defeat(); this.floatScore(gained,multiplier);
     const feedbackTime=state==='special'?820:650;
     this.timer=setTimeout(()=>this.nextQuestion(),feedbackTime);
@@ -391,6 +392,15 @@ class Battle {
     this.el.playerImg.src=charUrl(this.character,state);
     this.el.player.classList.remove('action','special-action','damage');
     this.el.player.classList.add(state==='damage'?'damage':state==='special'?'special-action':'action');
+  }
+  slashEffect(special=false){
+    const arenaRect=this.el.arena.getBoundingClientRect(), enemyRect=this.el.enemy.getBoundingClientRect();
+    const el=document.createElement('div');
+    el.className=`slash-burst${special?' special':''}`;
+    el.style.left=`${enemyRect.left-arenaRect.left+enemyRect.width*.5}px`;
+    el.style.top=`${enemyRect.top-arenaRect.top+enemyRect.height*.46}px`;
+    el.innerHTML='<span>ザシュッ！</span>';
+    this.el.arena.append(el); setTimeout(()=>el.remove(),480);
   }
   floatScore(score,multiplier){
     const el=document.createElement('div'); el.className='float-score'; el.textContent=`+${score}  ×${multiplier.toFixed(1)}`; this.el.arena.append(el); setTimeout(()=>el.remove(),600);
