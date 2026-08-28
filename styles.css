@@ -184,10 +184,19 @@ h1 { margin: 0; font-size: clamp(2rem, 4.5vw, 4.25rem); line-height: .98; letter
 }
 .slash-burst::after { top:58%; left:18%; right:-4%; height:6px; transform:skewX(-28deg) rotate(5deg); animation:slash-second .3s .035s ease-out both; }
 .slash-burst span {
-  position:absolute; right:-8%; top:4%; color:white; font-size:clamp(1rem,2.5vw,1.8rem); font-weight:1000;
-  letter-spacing:.04em; text-shadow:0 3px 0 #18588a,0 0 12px #77e9ff; transform:rotate(18deg);
+  position:absolute; left:34%; top:-10%; white-space:nowrap; color:#ffe04b; font-family:Impact,"Arial Black",sans-serif;
+  font-size:clamp(1.8rem,4.8vw,4rem); font-weight:1000; font-style:italic; line-height:.9; letter-spacing:.025em;
+  -webkit-text-stroke:clamp(2px,.3vw,4px) #111a36;
+  paint-order:stroke fill; text-shadow:4px 5px 0 #ff5a42,7px 9px 0 rgba(4,14,35,.72),0 0 15px rgba(255,255,255,.65);
+  transform:rotate(12deg); animation:comic-word .42s cubic-bezier(.15,.86,.24,1.25) both;
 }
 .slash-burst.special::before { height:12px; box-shadow:0 0 10px #fff,0 0 26px #67e8f9,0 0 38px #ffd45c; }
+.slash-burst.special span { font-size:clamp(2.2rem,6vw,5.2rem); }
+.slash-burst.comic-1 span { color:#7df4ff; text-shadow:4px 5px 0 #4264e8,7px 9px 0 rgba(4,14,35,.72),0 0 15px #fff; }
+.slash-burst.comic-2 span { color:#ffef59; text-shadow:4px 5px 0 #e73564,7px 9px 0 rgba(4,14,35,.72),0 0 15px #fff; }
+.slash-burst.comic-3 span { color:#ff725f; text-shadow:4px 5px 0 #ffd84d,7px 9px 0 rgba(4,14,35,.72),0 0 15px #fff; }
+.slash-burst.comic-4 span { color:#baff62; text-shadow:4px 5px 0 #5b48da,7px 9px 0 rgba(4,14,35,.72),0 0 15px #fff; }
+.slash-burst.comic-5 span { color:#f6a8ff; text-shadow:4px 5px 0 #7c3dde,7px 9px 0 rgba(4,14,35,.72),0 0 15px #fff; }
 
 .result-screen { min-height:100svh; display:grid; place-items:center; padding:18px; background:linear-gradient(rgba(6,20,45,.68),#07162f), url("https://tt-sensei.github.io/navi-character-/assets/web/fantasy/backgrounds/sky-island.webp") center/cover; }
 .result-card { width:min(760px,100%); border:1px solid var(--line); border-radius:28px; background:rgba(6,24,54,.92); box-shadow:var(--shadow); padding:clamp(22px,4vw,42px); text-align:center; }
@@ -221,6 +230,7 @@ h1 { margin: 0; font-size: clamp(2rem, 4.5vw, 4.25rem); line-height: .98; letter
 @keyframes score-float { to { transform:translateY(-55px); opacity:0; } }
 @keyframes slash-pop { 0%{opacity:0;transform:translate(-58%,-48%) rotate(-18deg) scale(.45)} 22%{opacity:1;transform:translate(-50%,-50%) rotate(-18deg) scale(1.08)} 100%{opacity:0;transform:translate(-38%,-58%) rotate(-18deg) scale(1.2)} }
 @keyframes slash-second { from{opacity:0;transform:translateX(-25px) skewX(-28deg) rotate(5deg) scaleX(.35)} to{opacity:1;transform:translateX(0) skewX(-28deg) rotate(5deg) scaleX(1)} }
+@keyframes comic-word { 0%{opacity:0;transform:rotate(12deg) scale(.18)} 34%{opacity:1;transform:rotate(12deg) scale(1.22)} 70%{transform:rotate(9deg) scale(1)} 100%{opacity:0;transform:rotate(6deg) translate(20px,-12px) scale(1.08)} }
 @keyframes pulse { to { filter:brightness(1.45); transform:scale(1.04); } }
 
 @media (max-width: 780px) {

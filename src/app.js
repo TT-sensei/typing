@@ -395,11 +395,13 @@ class Battle {
   }
   slashEffect(special=false){
     const arenaRect=this.el.arena.getBoundingClientRect(), enemyRect=this.el.enemy.getBoundingClientRect();
+    const words=['SMASH!!','SLASH!!','POW!!','CRASH!!','ZAP!!','WHAM!!'];
+    const wordIndex=Math.floor(Math.random()*words.length);
     const el=document.createElement('div');
-    el.className=`slash-burst${special?' special':''}`;
+    el.className=`slash-burst comic-${wordIndex}${special?' special':''}`;
     el.style.left=`${enemyRect.left-arenaRect.left+enemyRect.width*.5}px`;
     el.style.top=`${enemyRect.top-arenaRect.top+enemyRect.height*.46}px`;
-    el.innerHTML='<span>ザシュッ！</span>';
+    el.innerHTML=`<span>${words[wordIndex]}</span>`;
     this.el.arena.append(el); setTimeout(()=>el.remove(),480);
   }
   floatScore(score,multiplier){
