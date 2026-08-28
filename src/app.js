@@ -179,7 +179,8 @@ class Battle {
   }
   updateInput(){
     const reference=this.question?.display||'';
-    this.el.input.innerHTML=`<span class="typed">${escapeHtml(this.typed)}</span><span class="remaining">${escapeHtml(reference.slice(Math.min(this.typed.length,reference.length)))}</span>`;
+    const remaining=this.mode==='master'?'':reference.slice(Math.min(this.typed.length,reference.length));
+    this.el.input.innerHTML=`<span class="typed">${escapeHtml(this.typed)}</span><span class="remaining">${escapeHtml(remaining)}</span>`;
   }
   completeQuestion(){
     this.locked=true; this.combo++; this.maxCombo=Math.max(this.maxCombo,this.combo); this.kills++;
