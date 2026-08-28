@@ -1,4 +1,5 @@
-import { ASSET_BASE, BADGES, CHARACTERS, KANA_RANGES, MODE_INFO, MONSTERS, WORDS } from './data.js';
+import { ASSET_BASE, BADGES, CHARACTERS, KANA_RANGES, MODE_INFO, WORDS } from './data.js';
+import { BATTLE_BACKGROUNDS, MONSTER_POOLS } from './monster-data.js';
 import { makeQuestion, typeKey } from './romaji.js';
 import { Storage, enqueueReview, recordQuestion, reviewSuccess } from './storage.js';
 import { AudioSystem } from './audio.js';
@@ -8,11 +9,12 @@ let data=Storage.load();
 const audio=new AudioSystem(data.sound);
 let setup={mode:'kana',character:data.selectedCharacter,range:'vowels'};
 let game=null;
+let lastBackground='';
 
 const escapeHtml=(s)=>String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
 const characterById=id=>CHARACTERS.find(c=>c.id===id)||CHARACTERS[0];
 const charUrl=(c,state='stand')=> state==='stand' ? `${ASSET_BASE}/${c.stand}` : `${ASSET_BASE}/${state}/${c.action}-${state}.webp`;
-const monsterUrl=id=>`${ASSET_BASE}/monsters/${id.endsWith('-evolved')?'zako-evolved':'zako'}/${id}.webp`;
+const monsterUrl=monster=>`${ASSET_BASE}/monsters/${monster.category==='evolved'?'zako-evolved':monster.category}/${monster.id}.webp`;
 
 function rangeOptions(mode) {
   if(mode==='kana') return [
@@ -84,7 +86,6 @@ function startGame() {
 
 function preloadBattleAssets(character) {
   ['stand','attack','damage','special'].forEach(state=>{const image=new Image();image.decoding='async';image.src=charUrl(character,state);});
-  MONSTERS.forEach(id=>{const image=new Image();image.decoding='async';image.src=monsterUrl(id);});
 }
 
 class Battle {
@@ -93,10 +94,14 @@ class Battle {
     this.duration=60000; this.hp=5; this.score=0; this.combo=0; this.maxCombo=0; this.correctKeys=0; this.mistypes=0; this.kills=0; this.hints=0; this.hits=0;
     this.usedHint=false; this.hintStage=0; this.typed=''; this.lastQuestion=null; this.learned=[]; this.running=false; this.locked=true; this.newBadges=[];
     this.startedAt=0; this.qStartedAt=0; this.qDuration=0; this.qStartX=0; this.qTargetX=0; this.raf=0; this.timer=0; this.lastVisualFrame=0; this.lastTimePaint=0;
+    this.monsterGroup={kana:1,word:2,master:3}[this.mode]; this.lastMonsterId=''; this.monster=null; this.queuedMonster=null;
+    this.queueMonster(1);
     this.keyHandler=e=>this.onKey(e);
   }
   render() {
-    const backgrounds={kana:'training-ground',word:'forest',master:'ruins'};
+    const choices=BATTLE_BACKGROUNDS.filter(id=>id!==lastBackground);
+    const background=choices[Math.floor(Math.random()*choices.length)]||BATTLE_BACKGROUNDS[0];
+    lastBackground=background;
     app.innerHTML=`<section class="screen battle-screen">
       <header class="hud">
         <div class="hud-stat"><span class="hud-label">HP</span><span id="hp" class="hud-value hp-hearts">♥ ♥ ♥ ♥ ♥</span></div>
@@ -105,7 +110,7 @@ class Battle {
         <div class="hud-stat"><span class="hud-label">TIME</span><span id="time" class="hud-value">60.0</span></div>
         <button id="exit" class="exit-button">やめる</button>
       </header>
-      <div class="arena" id="arena" style="background-image:url('${ASSET_BASE}/backgrounds/${backgrounds[this.mode]}.webp')">
+      <div class="arena" id="arena" style="background-image:url('${ASSET_BASE}/backgrounds/${background}.webp')">
         <div class="battle-ground" aria-hidden="true"></div>
         <div class="enemy-slot" id="enemy"><img alt="敵モンスター"></div>
         <div class="problem-card" id="problem-card"><span class="mode-chip">${MODE_INFO[this.mode].name}</span><div class="kana" id="kana">準備</div><div class="romaji" id="romaji"></div><div class="input-progress" id="input"></div><div class="hint-note" id="hint"></div></div>
@@ -133,15 +138,33 @@ class Battle {
     if(!choices.length) choices=this.pool;
     return choices[Math.floor(Math.random()*choices.length)];
   }
+  monsterCategory(encounter){ return encounter%10===0?'boss':encounter%5===0?'evolved':'zako'; }
+  pickMonster(encounter){
+    const category=this.monsterCategory(encounter);
+    const pool=MONSTER_POOLS[this.monsterGroup][category];
+    const choices=pool.filter(id=>id!==this.lastMonsterId);
+    const ids=choices.length?choices:pool;
+    return {id:ids[Math.floor(Math.random()*ids.length)],category};
+  }
+  preloadMonster(monster){
+    const image=new Image(); image.decoding='async'; image.src=monsterUrl(monster);
+  }
+  queueMonster(encounter){
+    this.queuedMonster=this.pickMonster(encounter);
+    this.preloadMonster(this.queuedMonster);
+  }
   nextQuestion(same=false){
     if(!this.running) return;
-    if(!same) { this.question=this.chooseQuestion(); this.hintStage=0; this.usedHint=false; }
+    if(!same) {
+      this.question=this.chooseQuestion(); this.hintStage=0; this.usedHint=false;
+      this.monster=this.queuedMonster||this.pickMonster(this.kills+1);
+      this.lastMonsterId=this.monster.id;
+      this.queueMonster(this.kills+2);
+    }
     this.lastQuestion=this.question; this.typed=''; this.locked=false;
-    const evolved=this.kills>0 && this.kills%7===0;
-    const candidates=MONSTERS.filter(m=>m.endsWith('-evolved')===evolved);
-    this.monster=candidates[Math.floor(Math.random()*candidates.length)] || MONSTERS[0];
     this.el.enemyImg.src=monsterUrl(this.monster); this.el.enemyImg.alt='迫ってくるモンスター';
     this.el.enemy.className='enemy-slot';
+    if(this.monster.category==='boss') this.el.enemy.classList.add('boss');
     this.el.player.className='player-slot';
     this.el.playerImg.src=charUrl(this.character);
     this.el.kana.textContent=this.question.kana;

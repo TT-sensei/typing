@@ -10,13 +10,6 @@ export const CHARACTERS = [
   { id:'saku', name:'さく', job:'僧侶', stand:'saku-cleric-healer.webp', action:'saku-cleric' }
 ];
 
-export const MONSTERS = [
-  'happa-squirrel-leafy','hinoko-ember-newt','kinoko-apple-mushroom','komorin-little-night-bat',
-  'koro-golem-pebble-golem','mofu-wolf-frost-pup','purun-little-magic-slime','yukimaru-snow-puff',
-  'acorn-leafy','ember-frost-pup','forest-puru','moss-pebble-golem','violet-reef-seahorse',
-  'happa-squirrel-leafy-evolved','kinoko-apple-mushroom-evolved','purun-little-magic-slime-evolved'
-];
-
 // 2025年12月22日 内閣告示第4号の本表を表示形の基準にする。
 // accepts はPC入力として受け付ける別つづり。表示用と判定用を分離している。
 export const ROMAJI = {
