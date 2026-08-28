@@ -176,7 +176,7 @@ class Battle {
     const playerRect=this.el.player.getBoundingClientRect();
     const enemyWidth=this.el.enemy.offsetWidth;
     const length=this.question.display.length;
-    this.qStartX=arenaRect.width-enemyWidth*.82;
+    this.qStartX=arenaRect.width-enemyWidth*1.15;
     this.qTargetX=playerRect.right-arenaRect.left-enemyWidth*.43;
     this.qDuration=Math.min(14000,4800+length*850);
     this.qStartedAt=performance.now(); this.positionEnemy(0);
