@@ -84,7 +84,7 @@ function startGame() {
 
 function preloadBattleAssets(character) {
   ['stand','attack','damage','special'].forEach(state=>{const image=new Image();image.decoding='async';image.src=charUrl(character,state);});
-  MONSTERS.slice(0,8).forEach(id=>{const image=new Image();image.decoding='async';image.src=monsterUrl(id);});
+  MONSTERS.forEach(id=>{const image=new Image();image.decoding='async';image.src=monsterUrl(id);});
 }
 
 class Battle {
@@ -153,9 +153,9 @@ class Battle {
     const playerRect=this.el.player.getBoundingClientRect();
     const enemyWidth=this.el.enemy.offsetWidth;
     const length=this.question.display.length;
-    this.qStartX=arenaRect.width+55+Math.min(150,length*14);
+    this.qStartX=arenaRect.width-enemyWidth*.82;
     this.qTargetX=playerRect.right-arenaRect.left-enemyWidth*.43;
-    this.qDuration=Math.max(5500,(this.qStartX-this.qTargetX)/.105);
+    this.qDuration=Math.min(14000,4800+length*850);
     this.qStartedAt=performance.now(); this.positionEnemy(0);
   }
   frame(now=performance.now()){
