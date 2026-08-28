@@ -164,6 +164,7 @@ class Battle {
     this.lastQuestion=this.question; this.typed=''; this.locked=false;
     this.el.enemyImg.src=monsterUrl(this.monster); this.el.enemyImg.alt='迫ってくるモンスター';
     this.el.enemy.className='enemy-slot';
+    if(this.monster.category==='evolved') this.el.enemy.classList.add('evolved');
     if(this.monster.category==='boss') this.el.enemy.classList.add('boss');
     this.el.player.className='player-slot';
     this.el.playerImg.src=charUrl(this.character);
@@ -198,7 +199,8 @@ class Battle {
   }
   positionEnemy(p){
     const x=this.qStartX+(this.qTargetX-this.qStartX)*p;
-    const scale=.72+p*.36;
+    const scales=this.monster?.category==='boss'?[1,1.12]:this.monster?.category==='evolved'?[.9,1.12]:[.72,1.08];
+    const scale=scales[0]+p*(scales[1]-scales[0]);
     this.el.enemy.style.setProperty('--enemy-x',`${x}px`);
     this.el.enemy.style.setProperty('--enemy-scale',scale.toFixed(3));
   }
