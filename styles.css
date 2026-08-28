@@ -104,9 +104,8 @@ h1 { margin: 0; font-size: clamp(2rem, 4.5vw, 4.25rem); line-height: .98; letter
   background-position: center; background-size: cover;
 }
 .arena::after { content:""; position:absolute; inset:0; z-index:-1; background: linear-gradient(180deg, rgba(7,22,47,.08), rgba(7,22,47,.4)); }
-.attack-line { position: absolute; left: 7%; right: 7%; bottom: 23%; border-top: 2px dashed rgba(255,118,139,.6); filter: drop-shadow(0 0 6px rgba(255,50,90,.4)); }
-.attack-line::after { content:"こうげきライン"; position:absolute; right:0; top:4px; color:#ffd3da; font-size:.7rem; font-weight:900; }
-.enemy-slot { position:absolute; z-index:2; top:1%; left:50%; width:clamp(145px,25vh,265px); height:clamp(145px,25vh,265px); transform:translateX(-50%); will-change:transform; }
+.battle-ground { position:absolute; z-index:0; left:3%; right:3%; bottom:3%; height:19%; border-radius:50%; background:radial-gradient(ellipse at center,rgba(4,14,28,.36),rgba(4,14,28,0) 70%); pointer-events:none; }
+.enemy-slot { --enemy-x:100vw; --enemy-scale:.72; position:absolute; z-index:2; left:0; bottom:3%; width:clamp(145px,25vh,265px); height:clamp(145px,25vh,265px); transform:translate3d(var(--enemy-x),0,0) scale(var(--enemy-scale)); transform-origin:center bottom; will-change:transform; }
 .enemy-slot img { width:100%; height:100%; object-fit:contain; filter: drop-shadow(0 10px 8px rgba(0,0,0,.38)); }
 .enemy-slot.hit { animation: enemy-hit .34s ease-out; }
 .enemy-slot.attack { animation: enemy-attack .26s ease-in-out; }
@@ -117,7 +116,7 @@ h1 { margin: 0; font-size: clamp(2rem, 4.5vw, 4.25rem); line-height: .98; letter
 .player-slot.damage { animation:player-damage .42s ease-out both; }
 
 .problem-card {
-  position:absolute; z-index:5; left:50%; top:46%; transform:translate(-50%,-50%); width:min(580px,56vw);
+  position:absolute; z-index:5; left:50%; top:29%; transform:translate(-50%,-50%); width:min(580px,56vw);
   text-align:center; padding: clamp(12px,2vh,20px) clamp(20px,3vw,34px); border:2px solid rgba(196,225,255,.42); border-radius:24px;
   background:rgba(5,21,48,.94); box-shadow:0 16px 45px rgba(0,0,0,.42);
 }
@@ -152,10 +151,10 @@ h1 { margin: 0; font-size: clamp(2rem, 4.5vw, 4.25rem); line-height: .98; letter
 .secondary { border:1px solid var(--line); color:white; background:#143762; }
 
 @keyframes shake { 25%{transform:translate(calc(-50% - 7px),-50%)} 75%{transform:translate(calc(-50% + 7px),-50%)} }
-@keyframes enemy-hit { to { transform:translate(-50%,-120px) rotate(16deg) scale(.55); opacity:0; } }
-@keyframes enemy-attack { 50% { transform:translate(-50%,25px) scale(1.12); } }
-@keyframes player-action { 45% { transform:translate(32px,-12px) scale(1.12); } }
-@keyframes player-special { 45% { transform:translate(48px,-24px) scale(1.2); filter:drop-shadow(0 0 18px #9beeff); } }
+@keyframes enemy-hit { to { transform:translate3d(calc(var(--enemy-x) + 190px),-35px,0) rotate(16deg) scale(.55); opacity:0; } }
+@keyframes enemy-attack { 50% { transform:translate3d(calc(var(--enemy-x) - 34px),0,0) scale(1.15); } }
+@keyframes player-action { 45% { transform:translate(72px,-9px) scale(1.13); } }
+@keyframes player-special { 45% { transform:translate(96px,-20px) scale(1.2); filter:drop-shadow(0 0 18px #9beeff); } }
 @keyframes player-damage { 35% { transform:translate(-18px,8px) rotate(-4deg); } 70% { transform:translate(7px,0) rotate(2deg); } }
 @keyframes score-float { to { transform:translateY(-55px); opacity:0; } }
 @keyframes pulse { to { filter:brightness(1.45); transform:scale(1.04); } }
@@ -168,7 +167,7 @@ h1 { margin: 0; font-size: clamp(2rem, 4.5vw, 4.25rem); line-height: .98; letter
   .setup-row { grid-template-columns:1fr; }
   .characters { grid-template-columns:repeat(3,1fr); }
   .badge-grid { grid-template-columns:repeat(5,1fr); }
-  .problem-card { width:min(620px,72vw); top:45%; }
+  .problem-card { width:min(620px,72vw); top:29%; }
   .player-slot { left:2%; }
 }
 

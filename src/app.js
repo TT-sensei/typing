@@ -92,7 +92,7 @@ class Battle {
     Object.assign(this,config);
     this.duration=60000; this.hp=5; this.score=0; this.combo=0; this.maxCombo=0; this.correctKeys=0; this.mistypes=0; this.kills=0; this.hints=0; this.hits=0;
     this.usedHint=false; this.hintStage=0; this.typed=''; this.lastQuestion=null; this.learned=[]; this.running=false; this.locked=true; this.newBadges=[];
-    this.startedAt=0; this.qStartedAt=0; this.qDuration=0; this.qStartY=0; this.qTargetY=0; this.raf=0; this.timer=0; this.lastVisualFrame=0; this.lastTimePaint=0;
+    this.startedAt=0; this.qStartedAt=0; this.qDuration=0; this.qStartX=0; this.qTargetX=0; this.raf=0; this.timer=0; this.lastVisualFrame=0; this.lastTimePaint=0;
     this.keyHandler=e=>this.onKey(e);
   }
   render() {
@@ -106,7 +106,7 @@ class Battle {
         <button id="exit" class="exit-button">やめる</button>
       </header>
       <div class="arena" id="arena" style="background-image:url('${ASSET_BASE}/backgrounds/${backgrounds[this.mode]}.webp')">
-        <div class="attack-line"></div>
+        <div class="battle-ground" aria-hidden="true"></div>
         <div class="enemy-slot" id="enemy"><img alt="敵モンスター"></div>
         <div class="problem-card" id="problem-card"><span class="mode-chip">${MODE_INFO[this.mode].name}</span><div class="kana" id="kana">準備</div><div class="romaji" id="romaji"></div><div class="input-progress" id="input"></div><div class="hint-note" id="hint"></div></div>
         <div class="player-slot" id="player"><img src="${charUrl(this.character)}" alt="${this.character.name}・${this.character.job}"></div>
@@ -149,9 +149,13 @@ class Battle {
     this.el.hint.textContent='';
     if(same&&this.mode==='master'&&this.hintStage) this.showHint(this.hintStage);
     this.updateInput();
-    const h=this.el.arena.clientHeight, length=this.question.display.length;
-    this.qStartY=-Math.min(110,35+length*9); this.qTargetY=h*.69;
-    this.qDuration=Math.max(5500,(this.qTargetY-this.qStartY)/.085);
+    const arenaRect=this.el.arena.getBoundingClientRect();
+    const playerRect=this.el.player.getBoundingClientRect();
+    const enemyWidth=this.el.enemy.offsetWidth;
+    const length=this.question.display.length;
+    this.qStartX=arenaRect.width+55+Math.min(150,length*14);
+    this.qTargetX=playerRect.right-arenaRect.left-enemyWidth*.43;
+    this.qDuration=Math.max(5500,(this.qStartX-this.qTargetX)/.105);
     this.qStartedAt=performance.now(); this.positionEnemy(0);
   }
   frame(now=performance.now()){
@@ -169,7 +173,12 @@ class Battle {
     }
     this.raf=requestAnimationFrame(t=>this.frame(t));
   }
-  positionEnemy(p){ const y=this.qStartY+(this.qTargetY-this.qStartY)*p; this.el.enemy.style.transform=`translate(-50%, ${y}px)`; }
+  positionEnemy(p){
+    const x=this.qStartX+(this.qTargetX-this.qStartX)*p;
+    const scale=.72+p*.36;
+    this.el.enemy.style.setProperty('--enemy-x',`${x}px`);
+    this.el.enemy.style.setProperty('--enemy-scale',scale.toFixed(3));
+  }
   showHint(stage){
     if(!this.usedHint) this.hints++;
     this.hintStage=2; this.usedHint=true;
