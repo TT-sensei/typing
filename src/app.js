@@ -16,8 +16,8 @@ const monsterUrl=id=>`${ASSET_BASE}/monsters/${id.endsWith('-evolved')?'zako-evo
 
 function rangeOptions(mode) {
   if(mode==='kana') return [
-    ['vowels','母音（あいうえお）'],['k','か行'],['s','さ行'],['t','た行'],['n','な行'],['h','は行'],['m','ま行'],
-    ['y','や行'],['r','ら行'],['w','わ・を'],['voiced','濁音・半濁音'],['contracted','拗音'],['special','促音・「ん」'],['all','ぜんぶ']
+    ['vowels','母音（あいうえお）｜練習'],['kToN','か行〜な行'],['hToW','は行〜わ行'],
+    ['voiced','濁音・半濁音（点と丸）'],['small','小さい「や・ゆ・よ」／「っ」／「ん」'],['all','ぜんぶ']
   ];
   return [['easy','やさしい'],['normal','ふつう'],['hard','むずかしい'],['all','ぜんぶ']];
 }
@@ -240,8 +240,9 @@ class Battle {
     if(!this.running && !this.startedAt){ this.destroy(); renderStart(); return; }
     this.running=false; this.locked=true; cancelAnimationFrame(this.raf); clearTimeout(this.timer); window.removeEventListener('keydown',this.keyHandler);
     const total=this.correctKeys+this.mistypes, accuracy=total?Math.round(this.correctKeys/total*100):0;
-    const oldBest=data.bests[this.mode]; const isRecord=this.score>oldBest.score;
-    data.bests[this.mode]={score:Math.max(oldBest.score,this.score),maxCombo:Math.max(oldBest.maxCombo,this.maxCombo),accuracy:Math.max(oldBest.accuracy,accuracy)};
+    const ranked=!(this.mode==='kana'&&this.range==='vowels');
+    const oldBest=data.bests[this.mode]; const isRecord=ranked&&this.score>oldBest.score;
+    if(ranked) data.bests[this.mode]={score:Math.max(oldBest.score,this.score),maxCombo:Math.max(oldBest.maxCombo,this.maxCombo),accuracy:Math.max(oldBest.accuracy,accuracy)};
     data.totals.totalKeys+=this.correctKeys; data.totals.mistypes+=this.mistypes; data.totals.hints+=this.hints;
     if(reason!=='END') {
       data.totals.plays++;
@@ -269,12 +270,13 @@ function awardBadges(){
 }
 
 function renderResult({reason,accuracy,isRecord}) {
-  const g=game, badge=g.newBadges[0];
+  const g=game, badge=g.newBadges[0], practice=g.mode==='kana'&&g.range==='vowels';
   app.innerHTML=`<section class="screen result-screen"><div class="result-card">
     <p class="eyebrow">${MODE_INFO[g.mode].name}</p><h2 class="result-title">${reason}</h2>
     ${isRecord?'<div class="new-record">NEW RECORD!</div>':''}<div class="score-big">${g.score.toLocaleString()}</div>
+    ${practice?'<div class="practice-note">母音は練習モードのため、BEST SCOREには入りません</div>':''}
     <div class="result-grid">
-      <div class="result-stat"><b>BEST SCORE</b><span>${data.bests[g.mode].score.toLocaleString()}</span></div>
+      <div class="result-stat"><b>BEST SCORE</b><span>${practice?'対象外':data.bests[g.mode].score.toLocaleString()}</span></div>
       <div class="result-stat"><b>正しく入力</b><span>${g.correctKeys} キー</span></div>
       <div class="result-stat"><b>撃破数</b><span>${g.kills}</span></div>
       <div class="result-stat"><b>最大コンボ</b><span>${g.maxCombo}</span></div>
