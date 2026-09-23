@@ -121,7 +121,7 @@ function trainingQuestions() {
 function startGame() {
   const character=characterById(setup.character);
   preloadBattleAssets(character);
-  game=new Battle({mode:setup.mode,range:setup.range,character,pool:questionPool(),showRomaji:setup.mode!=='grandmaster'||setup.grandmasterRomaji});
+  game=new Battle({mode:setup.mode,range:setup.range,character,pool:questionPool(),showRomaji:setup.mode==='grandmaster'?setup.grandmasterRomaji:setup.mode!=='master'});
   game.render();
   game.countdown();
 }
@@ -357,8 +357,8 @@ class Battle {
   showHint(stage){
     if(!this.usedHint) this.hints++;
     this.hintStage=2; this.usedHint=true;
-    if(this.showRomaji) this.el.romaji.textContent=this.question.display;
-    this.el.hint.textContent=this.showRomaji?'ヒント：見ながら最後まで打てば大丈夫！':'ヒント：問題文を見ながら最後まで打とう！';
+    if(this.showRomaji||this.mode==='master') this.el.romaji.textContent=this.question.display;
+    this.el.hint.textContent=(this.showRomaji||this.mode==='master')?'ヒント：見ながら最後まで打てば大丈夫！':'ヒント：問題文を見ながら最後まで打とう！';
   }
   onKey(e){
     if(!this.running||this.locked||e.ctrlKey||e.metaKey||e.altKey||e.isComposing) return;
