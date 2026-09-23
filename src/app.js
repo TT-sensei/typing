@@ -1,9 +1,9 @@
-import { ASSET_BASE, BADGES, CHARACTERS, KANA_RANGES, MODE_INFO, WORDS } from './data.js?v=20260923-5';
-import { SENTENCES } from './sentence-data.js?v=20260923-5';
-import { BATTLE_BACKGROUNDS, MONSTER_POOLS } from './monster-data.js?v=20260923-5';
-import { makeQuestion, typeKey } from './romaji.js?v=20260923-5';
-import { Storage, enqueueReview, recordQuestion, reviewSuccess } from './storage.js?v=20260923-5';
-import { AudioSystem } from './audio.js?v=20260923-5';
+import { ASSET_BASE, BADGES, CHARACTERS, KANA_RANGES, MODE_INFO, WORDS } from './data.js';
+import { SENTENCES } from './sentence-data.js';
+import { BATTLE_BACKGROUNDS, MONSTER_POOLS } from './monster-data.js';
+import { makeQuestion, typeKey } from './romaji.js';
+import { Storage, enqueueReview, recordQuestion, reviewSuccess } from './storage.js';
+import { AudioSystem } from './audio.js';
 
 const app=document.querySelector('#app');
 let data=Storage.load();
