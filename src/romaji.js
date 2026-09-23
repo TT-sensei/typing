@@ -20,12 +20,7 @@ function romajiPattern(kana) {
   }).join('');
 }
 
-function escapeRegExp(value) {
-  return value.replace(/[.*+?^${}()|[\\]\\]/g,'\\const MAX_VARIANTS = 96;
-');
-}
-
-export function tokenizeKana(text) {
+function escapeRegExp(value) {\n  return value.replace(/[.*+?^${}()|[\\]\\]/g,'\\$&');\n}\n\nexport function tokenizeKana(text) {
   const result=[];
   for(let i=0;i<text.length;i++) {
     const pair=text.slice(i,i+2);
