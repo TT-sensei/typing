@@ -51,7 +51,7 @@ function renderStart() {
             </div></div>
             <label><span class="section-label">学習する範囲</span><select class="range-select" id="range-select">${rangeOptions(setup.mode).map(([v,l])=>`<option value="${v}" ${setup.range===v?'selected':''}>${l}</option>`).join('')}</select></label>
           </div>
-          <button class="start-button" id="start-game">60秒バトル START!</button>
+          <button class="start-button" id="start-game">${setup.mode==='grandmaster'?'120秒バトル START!':'60秒バトル START!'}</button>
         </section>
         <section class="training-panel">
           <div class="training-copy">
@@ -240,7 +240,7 @@ class Training {
 class Battle {
   constructor(config) {
     Object.assign(this,config);
-    this.duration=60000; this.hp=5; this.score=0; this.combo=0; this.maxCombo=0; this.correctKeys=0; this.mistypes=0; this.kills=0; this.hints=0; this.hits=0;
+    this.duration=config.mode==='grandmaster'?120000:60000; this.hp=5; this.score=0; this.combo=0; this.maxCombo=0; this.correctKeys=0; this.mistypes=0; this.kills=0; this.hints=0; this.hits=0;
     this.usedHint=false; this.hintStage=0; this.typed=''; this.lastQuestion=null; this.learned=[]; this.running=false; this.locked=true; this.newBadges=[];
     this.startedAt=0; this.qStartedAt=0; this.qDuration=0; this.qStartX=0; this.qTargetX=0; this.raf=0; this.timer=0; this.lastVisualFrame=0; this.lastTimePaint=0;
     this.monsterGroup={kana:1,word:2,master:3,grandmaster:3}[this.mode]; this.lastMonsterId=''; this.monster=null; this.queuedMonster=null;
@@ -256,7 +256,7 @@ class Battle {
         <div class="hud-stat"><span class="hud-label">HP</span><span id="hp" class="hud-value hp-hearts">♥ ♥ ♥ ♥ ♥</span></div>
         <div class="hud-stat"><span class="hud-label">SCORE</span><span id="score" class="hud-value">0</span></div>
         <div class="hud-stat"><span class="hud-label">COMBO</span><span id="combo" class="hud-value">0</span></div>
-        <div class="hud-stat"><span class="hud-label">TIME</span><span id="time" class="hud-value">60.0</span></div>
+        <div class="hud-stat"><span class="hud-label">TIME</span><span id="time" class="hud-value">${this.duration/1000}.0</span></div>
         <button id="exit" class="exit-button">やめる</button>
       </header>
       <div class="arena" id="arena" style="background-image:url('${ASSET_BASE}/backgrounds/${background}.webp')">
