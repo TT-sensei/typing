@@ -8,7 +8,7 @@ import { AudioSystem } from './audio.js';
 const app=document.querySelector('#app');
 let data=Storage.load();
 const audio=new AudioSystem(data.sound);
-let setup={mode:'kana',character:data.selectedCharacter,range:'vowels'};
+let setup={mode:'kana',character:data.selectedCharacter,range:'vowels',grandmasterRomaji:true};
 let game=null;
 let lastBackground='';
 
@@ -49,7 +49,7 @@ function renderStart() {
             <div><span class="section-label">主人公をえらぶ</span><div class="characters">
               ${CHARACTERS.map(c=>`<button class="character" data-character="${c.id}" aria-label="${c.name}・${c.job}" aria-pressed="${setup.character===c.id}"><img src="${charUrl(c)}" alt=""><span>${c.name}｜${c.job}</span></button>`).join('')}
             </div></div>
-            <label><span class="section-label">学習する範囲</span><select class="range-select" id="range-select">${rangeOptions(setup.mode).map(([v,l])=>`<option value="${v}" ${setup.range===v?'selected':''}>${l}</option>`).join('')}</select></label>
+            <label><span class="section-label">${setup.mode==='grandmaster'?'ローマ字表示':'学習する範囲'}</span><select class="range-select" id="${setup.mode==='grandmaster'?'grandmaster-romaji':'range-select'}">setup.mode==='grandmaster'?[['shown','ローマ字あり'],['hidden','ローマ字なし']].map(([v,l])=>`<option value="${v}" ${setup.grandmasterRomaji===(v==='shown')?'selected':''}>${l}</option>`).join(''):rangeOptions(setup.mode).map(([v,l])=>`<option value="${v}" ${setup.range===v?'selected':''}>${l}</option>`).join('')</select></label>
           </div>
           <button class="start-button" id="start-game">${setup.mode==='grandmaster'?'120秒バトル START!':'60秒バトル START!'}</button>
         </section>
@@ -73,7 +73,8 @@ function renderStart() {
     renderStart();
   });
   app.querySelectorAll('[data-character]').forEach(btn=>btn.onclick=()=>{ setup.character=btn.dataset.character; data.selectedCharacter=setup.character; Storage.save(data); renderStart(); });
-  app.querySelector('#range-select').onchange=e=>setup.range=e.target.value;
+  if(setup.mode==='grandmaster') app.querySelector('#grandmaster-romaji').onchange=e=>setup.grandmasterRomaji=e.target.value==='shown';
+  else app.querySelector('#range-select').onchange=e=>setup.range=e.target.value;
   app.querySelector('#sound-toggle').onclick=()=>{ data.sound=!data.sound; audio.setEnabled(data.sound); Storage.save(data); renderStart(); };
   app.querySelector('#start-game').onclick=()=>{ audio.ensure(); startGame(); };
   app.querySelector('#start-training').onclick=()=>{ audio.ensure(); startTraining(training); };
@@ -120,7 +121,7 @@ function trainingQuestions() {
 function startGame() {
   const character=characterById(setup.character);
   preloadBattleAssets(character);
-  game=new Battle({mode:setup.mode,range:setup.range,character,pool:questionPool()});
+  game=new Battle({mode:setup.mode,range:setup.range,character,pool:questionPool(),showRomaji:setup.mode!=='grandmaster'||setup.grandmasterRomaji});
   game.render();
   game.countdown();
 }
@@ -317,8 +318,8 @@ class Battle {
     if(this.monster.category==='boss') this.el.enemy.classList.add('boss');
     this.el.player.className='player-slot';
     this.el.playerImg.src=charUrl(this.character);
-    this.el.kana.textContent=this.question.kana;
-    this.el.romaji.textContent=this.mode==='master'?'':this.question.display;
+    this.el.kana.textContent=this.question.text||this.question.kana;
+    this.el.romaji.textContent=this.showRomaji?this.question.display:'';
     this.el.hint.textContent='';
     if(same&&this.mode==='master'&&this.hintStage) this.showHint(this.hintStage);
     this.updateInput();
@@ -356,8 +357,8 @@ class Battle {
   showHint(stage){
     if(!this.usedHint) this.hints++;
     this.hintStage=2; this.usedHint=true;
-    this.el.romaji.textContent=this.question.display;
-    this.el.hint.textContent='ヒント：見ながら最後まで打てば大丈夫！';
+    if(this.showRomaji) this.el.romaji.textContent=this.question.display;
+    this.el.hint.textContent=this.showRomaji?'ヒント：見ながら最後まで打てば大丈夫！':'ヒント：問題文を見ながら最後まで打とう！';
   }
   onKey(e){
     if(!this.running||this.locked||e.ctrlKey||e.metaKey||e.altKey||e.isComposing) return;
@@ -370,7 +371,7 @@ class Battle {
   }
   updateInput(){
     const reference=this.question?.display||'';
-    const remaining=(this.mode==='master'||this.mode==='grandmaster')?'':reference.slice(Math.min(this.typed.length,reference.length));
+    const remaining=this.showRomaji?reference.slice(Math.min(this.typed.length,reference.length)):'';
     this.el.input.innerHTML=`<span class="typed">${escapeHtml(this.typed)}</span><span class="remaining">${escapeHtml(remaining)}</span>`;
   }
   completeQuestion(){
