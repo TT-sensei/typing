@@ -199,7 +199,7 @@ class Training {
   }
   onKey(e) {
     if(!this.running||this.locked||e.ctrlKey||e.metaKey||e.altKey||e.isComposing) return;
-    if(e.key.length!==1||!/[a-z']/i.test(e.key)) return;
+    if(e.key.length!==1||!/[a-z'-]/i.test(e.key)) return;
     e.preventDefault();
     const result=typeKey(this.question,this.typed,e.key);
     if(!result.ok) {
