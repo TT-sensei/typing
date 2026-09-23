@@ -94,5 +94,6 @@ export const BADGES = [
 export const MODE_INFO = {
   kana:{name:'かなバトル',desc:'ローマ字を見ながら文字を打とう'},
   word:{name:'ことばバトル',desc:'ローマ字を見ながら言葉を打とう'},
-  master:{name:'マスターバトル',desc:'ローマ字を見ないで挑戦！'}
+  master:{name:'マスターバトル',desc:'ローマ字を見ないで挑戦！'},
+  grandmaster:{name:'グランドマスター',desc:'文章をローマ字なしで打とう！'}
 };
