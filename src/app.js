@@ -1,4 +1,5 @@
 import { ASSET_BASE, BADGES, CHARACTERS, KANA_RANGES, MODE_INFO, WORDS } from './data.js';
+import { SENTENCES } from './sentence-data.js';
 import { BATTLE_BACKGROUNDS, MONSTER_POOLS } from './monster-data.js';
 import { makeQuestion, typeKey } from './romaji.js';
 import { Storage, enqueueReview, recordQuestion, reviewSuccess } from './storage.js';
@@ -17,6 +18,7 @@ const charUrl=(c,state='stand')=> state==='stand' ? `${ASSET_BASE}/${c.stand}` :
 const monsterUrl=monster=>`${ASSET_BASE}/monsters/${monster.category==='evolved'?'zako-evolved':monster.category}/${monster.id}.webp`;
 
 function rangeOptions(mode) {
+  if(mode==='grandmaster') return [['all','ランダムに出題']];
   if(mode==='kana') return [
     ['vowels','母音（あいうえお）｜練習'],['kToN','か行〜な行'],['hToW','は行〜わ行'],
     ['voiced','濁音・半濁音（点と丸）'],['small','小さい「や・ゆ・よ」／「っ」／「ん」'],['all','ぜんぶ']
@@ -67,7 +69,7 @@ function renderStart() {
 
   app.querySelectorAll('[data-mode]').forEach(btn=>btn.onclick=()=>{
     setup.mode=btn.dataset.mode;
-    setup.range=setup.mode==='kana'?'vowels':'easy';
+    setup.range=setup.mode==='kana'?'vowels':setup.mode==='grandmaster'?'all':'easy';
     renderStart();
   });
   app.querySelectorAll('[data-character]').forEach(btn=>btn.onclick=()=>{ setup.character=btn.dataset.character; data.selectedCharacter=setup.character; Storage.save(data); renderStart(); });
@@ -82,6 +84,7 @@ function questionPool() {
     const keys=setup.range==='all' ? Object.keys(KANA_RANGES).flatMap(k=>KANA_RANGES[k]) : KANA_RANGES[setup.range];
     return [...new Set(keys)].map(k=>makeQuestion(k,{kind:'kana'}));
   }
+  if(setup.mode==='grandmaster') return SENTENCES.map(s=>makeQuestion(s.kana,{kind:'sentence',text:s.text}));
   return WORDS.filter(w=>setup.range==='all'||w.level===setup.range).map(w=>makeQuestion(w.kana,{kind:'word',level:w.level}));
 }
 
@@ -188,7 +191,7 @@ class Training {
     this.guided=!(this.seen[this.question.id]>0); this.seen[this.question.id]=(this.seen[this.question.id]||0)+1;
     this.el.card.classList.remove('shake','training-clear');
     this.el.player.classList.remove('training-cheer'); this.el.partner.classList.remove('training-cheer');
-    this.el.kana.textContent=this.question.kana;
+    this.el.kana.textContent=this.question.text||this.question.kana;
     this.el.romaji.textContent=this.guided?this.question.display:'';
     this.el.hint.textContent=this.guided?'まずは見ながら打ってみよう':'思い出して打ってみよう（3回まちがえると答えが出るよ）';
     this.updateInput();
@@ -240,7 +243,7 @@ class Battle {
     this.duration=60000; this.hp=5; this.score=0; this.combo=0; this.maxCombo=0; this.correctKeys=0; this.mistypes=0; this.kills=0; this.hints=0; this.hits=0;
     this.usedHint=false; this.hintStage=0; this.typed=''; this.lastQuestion=null; this.learned=[]; this.running=false; this.locked=true; this.newBadges=[];
     this.startedAt=0; this.qStartedAt=0; this.qDuration=0; this.qStartX=0; this.qTargetX=0; this.raf=0; this.timer=0; this.lastVisualFrame=0; this.lastTimePaint=0;
-    this.monsterGroup={kana:1,word:2,master:3}[this.mode]; this.lastMonsterId=''; this.monster=null; this.queuedMonster=null;
+    this.monsterGroup={kana:1,word:2,master:3,grandmaster:3}[this.mode]; this.lastMonsterId=''; this.monster=null; this.queuedMonster=null;
     this.queueMonster(1);
     this.keyHandler=e=>this.onKey(e);
   }
@@ -367,12 +370,12 @@ class Battle {
   }
   updateInput(){
     const reference=this.question?.display||'';
-    const remaining=this.mode==='master'?'':reference.slice(Math.min(this.typed.length,reference.length));
+    const remaining=(this.mode==='master'||this.mode==='grandmaster')?'':reference.slice(Math.min(this.typed.length,reference.length));
     this.el.input.innerHTML=`<span class="typed">${escapeHtml(this.typed)}</span><span class="remaining">${escapeHtml(remaining)}</span>`;
   }
   completeQuestion(){
     this.locked=true; this.combo++; this.maxCombo=Math.max(this.maxCombo,this.combo); this.kills++;
-    const multiplier=this.usedHint&&this.mode==='master'?1:Math.min(2,1+this.combo*.1);
+    const multiplier=this.usedHint&&(this.mode==='master'||this.mode==='grandmaster')?1:Math.min(2,1+this.combo*.1);
     const gained=Math.round(this.typed.length*10*multiplier);
     this.score+=gained; this.el.score.textContent=this.score.toLocaleString(); this.el.combo.textContent=this.combo;
     recordQuestion(data,this.question,true,this.usedHint);
@@ -413,8 +416,8 @@ class Battle {
   enemyReached(){
     this.locked=true; this.hp--; this.hits++; this.combo=0; this.el.combo.textContent='0'; this.el.hp.textContent=Array.from({length:5},(_,i)=>i<this.hp?'♥':'♡').join(' ');
     this.el.enemy.classList.add('attack'); audio.damage(); this.playerAction('damage');
-    recordQuestion(data,this.question,false,this.usedHint); enqueueReview(data,this.question,this.kills+3+Math.floor(Math.random()*3));
-    if(this.mode==='master') this.showHint(2);
+    recordQuestion(data,this.question,false,this.usedHint); if(this.mode!=='grandmaster') enqueueReview(data,this.question,this.kills+3+Math.floor(Math.random()*3));
+    if(this.mode==='master'||this.mode==='grandmaster') this.showHint(2);
     this.typed=''; this.updateInput();
     if(this.hp<=0){this.timer=setTimeout(()=>this.finish('GAME OVER'),500);return;}
     this.timer=setTimeout(()=>this.nextQuestion(true),480);
