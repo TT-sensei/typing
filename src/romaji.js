@@ -73,13 +73,7 @@ export function makeQuestion(kana, meta={}) {
 export function typeKey(question, current, key) {
   const next=(current+key).toLowerCase();
   const prefixPattern=new RegExp('^(?:'+question.pattern+')');
-  const fullPattern=new RegExp('^(?:'+question.pattern+')
-
-export function hintPattern(display) {
-  if(display.length<=1) return display;
-  return display[0]+' '+Array.from({length:display.length-1},()=>'_').join(' ');
-}
-);
+  const fullPattern=new RegExp('^(?:'+question.pattern+')$');
   if(!prefixPattern.test(next)) return {ok:false, complete:false, value:current};
   return {ok:true, complete:fullPattern.test(next), value:next};
 }
