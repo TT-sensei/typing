@@ -22,7 +22,7 @@ export const ROMAJI = {
   'ま':{show:'ma', accepts:['ma']}, 'み':{show:'mi', accepts:['mi']}, 'む':{show:'mu', accepts:['mu']}, 'め':{show:'me', accepts:['me']}, 'も':{show:'mo', accepts:['mo']},
   'や':{show:'ya', accepts:['ya']}, 'ゆ':{show:'yu', accepts:['yu']}, 'よ':{show:'yo', accepts:['yo']},
   'ら':{show:'ra', accepts:['ra']}, 'り':{show:'ri', accepts:['ri']}, 'る':{show:'ru', accepts:['ru']}, 'れ':{show:'re', accepts:['re']}, 'ろ':{show:'ro', accepts:['ro']},
-  'わ':{show:'wa', accepts:['wa']}, 'を':{show:'wo', accepts:['wo','o']}, 'ん':{show:'n', accepts:['n','nn']},
+  'わ':{show:'wa', accepts:['wa']}, 'を':{show:'wo', accepts:['wo','o']}, 'ん':{show:'n', accepts:['n','nn']}, 'ー':{show:'-', accepts:['-']},
   'が':{show:'ga', accepts:['ga']}, 'ぎ':{show:'gi', accepts:['gi']}, 'ぐ':{show:'gu', accepts:['gu']}, 'げ':{show:'ge', accepts:['ge']}, 'ご':{show:'go', accepts:['go']},
   'ざ':{show:'za', accepts:['za']}, 'じ':{show:'ji', accepts:['ji','zi']}, 'ず':{show:'zu', accepts:['zu']}, 'ぜ':{show:'ze', accepts:['ze']}, 'ぞ':{show:'zo', accepts:['zo']},
   'だ':{show:'da', accepts:['da']}, 'ぢ':{show:'ji', accepts:['ji','zi','di']}, 'づ':{show:'zu', accepts:['zu','du']}, 'で':{show:'de', accepts:['de']}, 'ど':{show:'do', accepts:['do']},
