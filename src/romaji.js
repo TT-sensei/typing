@@ -8,19 +8,18 @@ function romajiPattern(kana) {
     if(token==='っ') {
       const next=ROMAJI[tokens[i+1]]?.accepts || [];
       const choices=[...new Set(next.map(v=>v[0]).filter(Boolean))];
-      return choices.length ? `(?:${choices.map(escapeRegExp).join('|')})` : '(?!)';
+      return choices.length ? '(?:'+choices.join('|')+')' : '(?!)';
     }
     if(token==='ん') {
       const nextShow=ROMAJI[tokens[i+1]]?.show || '';
       const choices=/^[aiueoy]/.test(nextShow) ? ["n'",'nn'] : ['n','nn'];
-      return `(?:${choices.map(escapeRegExp).join('|')})`;
+      return '(?:'+choices.join('|')+')';
     }
     const choices=ROMAJI[token]?.accepts || [];
-    return choices.length ? `(?:${choices.map(escapeRegExp).join('|')})` : '(?!)';
+    return choices.length ? '(?:'+choices.join('|')+')' : '(?!)';
   }).join('');
 }
-
-function escapeRegExp(value) {\n  return value.replace(/[.*+?^${}()|[\\]\\]/g,'\\$&');\n}\n\nexport function tokenizeKana(text) {
+export function tokenizeKana(text) {
   const result=[];
   for(let i=0;i<text.length;i++) {
     const pair=text.slice(i,i+2);
