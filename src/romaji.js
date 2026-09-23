@@ -1,4 +1,4 @@
-import { ROMAJI } from './data.js';
+import { ROMAJI } from './data.js?v=20260923-5';
 
 const MAX_VARIANTS = 96;
 
