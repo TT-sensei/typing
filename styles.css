@@ -47,7 +47,7 @@ h1 { margin: 0; font-size: clamp(2rem, 4.5vw, 4.25rem); line-height: .98; letter
 }
 .total-record { color: var(--muted); font-weight: 800; }
 
-.mode-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.mode-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
 .mode-card {
   position: relative; text-align: left; color: var(--ink); border: 2px solid transparent; border-radius: 22px;
   padding: 20px; min-height: 168px; cursor: pointer; overflow: hidden; box-shadow: var(--shadow);
@@ -57,6 +57,7 @@ h1 { margin: 0; font-size: clamp(2rem, 4.5vw, 4.25rem); line-height: .98; letter
 .mode-card[aria-pressed="true"] { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(255,212,92,.18), var(--shadow); }
 .mode-card:nth-child(2) { background: linear-gradient(145deg, rgba(16,69,73,.96), rgba(21,91,91,.88)); }
 .mode-card:nth-child(3) { background: linear-gradient(145deg, rgba(60,28,90,.96), rgba(79,40,109,.9)); }
+.mode-card:nth-child(4) { background: linear-gradient(145deg, rgba(92,56,24,.96), rgba(122,76,31,.9)); }
 .mode-label { display: block; font-size: clamp(1.25rem, 2.3vw, 1.9rem); font-weight: 1000; }
 .mode-desc { display: block; margin-top: 7px; color: #e1edfa; font-weight: 800; line-height: 1.45; }
 .best { position: absolute; bottom: 15px; left: 20px; color: var(--gold); font-weight: 1000; letter-spacing: .04em; }
