@@ -49,7 +49,7 @@ function renderStart() {
             <div><span class="section-label">主人公をえらぶ</span><div class="characters">
               ${CHARACTERS.map(c=>`<button class="character" data-character="${c.id}" aria-label="${c.name}・${c.job}" aria-pressed="${setup.character===c.id}"><img src="${charUrl(c)}" alt=""><span>${c.name}｜${c.job}</span></button>`).join('')}
             </div></div>
-            <label><span class="section-label">${setup.mode==='grandmaster'?'ローマ字表示':'学習する範囲'}</span><select class="range-select" id="${setup.mode==='grandmaster'?'grandmaster-romaji':'range-select'}">setup.mode==='grandmaster'?[['shown','ローマ字あり'],['hidden','ローマ字なし']].map(([v,l])=>`<option value="${v}" ${setup.grandmasterRomaji===(v==='shown')?'selected':''}>${l}</option>`).join(''):rangeOptions(setup.mode).map(([v,l])=>`<option value="${v}" ${setup.range===v?'selected':''}>${l}</option>`).join('')</select></label>
+            <label><span class="section-label">${setup.mode==='grandmaster'?'ローマ字表示':'学習する範囲'}</span><select class="range-select" id="${setup.mode==='grandmaster'?'grandmaster-romaji':'range-select'}">${setup.mode==='grandmaster' ? [['shown','ローマ字あり'],['hidden','ローマ字なし']].map(([v,l])=>`<option value="${v}" ${setup.grandmasterRomaji===(v==='shown')?'selected':''}>${l}</option>`).join('') : rangeOptions(setup.mode).map(([v,l])=>`<option value="${v}" ${setup.range===v?'selected':''}>${l}</option>`).join('')}</select></label>
           </div>
           <button class="start-button" id="start-game">${setup.mode==='grandmaster'?'120秒バトル START!':'60秒バトル START!'}</button>
         </section>
