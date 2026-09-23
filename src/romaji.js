@@ -2,6 +2,29 @@ import { ROMAJI } from './data.js';
 
 const MAX_VARIANTS = 96;
 
+function romajiPattern(kana) {
+  const tokens=tokenizeKana(kana);
+  return tokens.map((token,i)=>{
+    if(token==='っ') {
+      const next=ROMAJI[tokens[i+1]]?.accepts || [];
+      const choices=[...new Set(next.map(v=>v[0]).filter(Boolean))];
+      return choices.length ? `(?:${choices.map(escapeRegExp).join('|')})` : '(?!)';
+    }
+    if(token==='ん') {
+      const nextShow=ROMAJI[tokens[i+1]]?.show || '';
+      const choices=/^[aiueoy]/.test(nextShow) ? ["n'",'nn'] : ['n','nn'];
+      return `(?:${choices.map(escapeRegExp).join('|')})`;
+    }
+    const choices=ROMAJI[token]?.accepts || [];
+    return choices.length ? `(?:${choices.map(escapeRegExp).join('|')})` : '(?!)';
+  }).join('');
+}
+
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\\]\\]/g,'\\const MAX_VARIANTS = 96;
+');
+}
+
 export function tokenizeKana(text) {
   const result=[];
   for(let i=0;i<text.length;i++) {
@@ -50,14 +73,21 @@ export function acceptedRomaji(kana) {
 
 export function makeQuestion(kana, meta={}) {
   const display=displayRomaji(kana);
-  return { id:kana, kana, display, accepts:acceptedRomaji(kana), ...meta };
+  return { id:kana, kana, display, accepts:acceptedRomaji(kana), pattern:romajiPattern(kana), ...meta };
 }
 
 export function typeKey(question, current, key) {
   const next=(current+key).toLowerCase();
-  const possible=question.accepts.filter(v=>v.startsWith(next));
-  if(!possible.length) return {ok:false, complete:false, value:current};
-  return {ok:true, complete:possible.includes(next), value:next};
+  const prefixPattern=new RegExp('^(?:'+question.pattern+')');
+  const fullPattern=new RegExp('^(?:'+question.pattern+')
+
+export function hintPattern(display) {
+  if(display.length<=1) return display;
+  return display[0]+' '+Array.from({length:display.length-1},()=>'_').join(' ');
+}
+);
+  if(!prefixPattern.test(next)) return {ok:false, complete:false, value:current};
+  return {ok:true, complete:fullPattern.test(next), value:next};
 }
 
 export function hintPattern(display) {
