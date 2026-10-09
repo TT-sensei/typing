@@ -49,7 +49,12 @@ function renderStart() {
             <div><span class="section-label">主人公をえらぶ</span><div class="characters">
               ${CHARACTERS.map(c=>`<button class="character" data-character="${c.id}" aria-label="${c.name}・${c.job}" aria-pressed="${setup.character===c.id}"><img src="${charUrl(c)}" alt=""><span>${c.name}｜${c.job}</span></button>`).join('')}
             </div></div>
-            <label><span class="section-label">${setup.mode==='grandmaster'?'ローマ字表示':'学習する範囲'}</span><select class="range-select" id="${setup.mode==='grandmaster'?'grandmaster-romaji':'range-select'}">${setup.mode==='grandmaster' ? [['shown','ローマ字あり'],['hidden','ローマ字なし']].map(([v,l])=>`<option value="${v}" ${setup.grandmasterRomaji===(v==='shown')?'selected':''}>${l}</option>`).join('') : rangeOptions(setup.mode).map(([v,l])=>`<option value="${v}" ${setup.range===v?'selected':''}>${l}</option>`).join('')}</select></label>
+            <div class="range-picker">
+              <span class="section-label">${setup.mode==='grandmaster'?'ローマ字表示':'学習する範囲'}</span>
+              ${setup.mode==='grandmaster'
+                ? `<select class="range-select" id="grandmaster-romaji">${[['shown','ローマ字あり'],['hidden','ローマ字なし']].map(([v,l])=>`<option value="${v}" ${setup.grandmasterRomaji===(v==='shown')?'selected':''}>${l}</option>`).join('')}</select>`
+                : `<div class="range-options" aria-label="学習する範囲">${rangeOptions(setup.mode).map(([v,l])=>{const parts=l.split('｜');return `<button type="button" class="range-card" data-range="${v}" aria-pressed="${setup.range===v}"><span class="range-card-title">${escapeHtml(parts[0])}</span>${parts[1]?`<span class="range-card-note">${escapeHtml(parts[1])}</span>`:''}</button>`;}).join('')}</div>`}
+            </div>
           </div>
           <button class="start-button" id="start-game">${setup.mode==='grandmaster'?'120秒バトル START!':'60秒バトル START!'}</button>
         </section>
@@ -73,8 +78,11 @@ function renderStart() {
     renderStart();
   });
   app.querySelectorAll('[data-character]').forEach(btn=>btn.onclick=()=>{ setup.character=btn.dataset.character; data.selectedCharacter=setup.character; Storage.save(data); renderStart(); });
-  if(setup.mode==='grandmaster') app.querySelector('#grandmaster-romaji').onchange=e=>setup.grandmasterRomaji=e.target.value==='shown';
-  else app.querySelector('#range-select').onchange=e=>setup.range=e.target.value;
+  if(setup.mode==='grandmaster') {
+    app.querySelector('#grandmaster-romaji').onchange=e=>setup.grandmasterRomaji=e.target.value==='shown';
+  } else {
+    app.querySelectorAll('[data-range]').forEach(btn=>btn.onclick=()=>{ setup.range=btn.dataset.range; renderStart(); });
+  }
   app.querySelector('#sound-toggle').onclick=()=>{ data.sound=!data.sound; audio.setEnabled(data.sound); Storage.save(data); renderStart(); };
   app.querySelector('#start-game').onclick=()=>{ audio.ensure(); startGame(); };
   app.querySelector('#start-training').onclick=()=>{ audio.ensure(); startTraining(training); };
