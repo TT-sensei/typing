@@ -58,10 +58,6 @@ function renderStart() {
           </div>
           <button class="start-button" id="start-game">${setup.mode==='grandmaster'?'120秒バトル START!':'60秒バトル START!'}</button>
         </section>
-        <section class="beginner-entry" aria-label="初心者向け基礎練習">
-          <div><span class="section-label">はじめてのタイピング</span><strong>キーボードに慣れるところから始めよう</strong><p>ホームポジションや母音の入力を、自分のペースで練習できます。</p></div>
-          <a class="beginner-entry-link" href="./beginner/">基礎練習へ <span aria-hidden="true">→</span></a>
-        </section>
         <section class="training-panel">
           <div class="training-copy">
             <span class="training-icon" aria-hidden="true">⚔️</span>
