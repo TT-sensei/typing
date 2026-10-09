@@ -188,7 +188,7 @@ class Training {
   nextQuestion() {
     if(!this.running) return;
     if(this.index>=this.queue.length) {this.queue=shuffled(this.pool);this.index=0;}
-    this.question=this.queue[this.index++]; this.typed=''; this.questionMisses=0; this.rescued=false; this.locked=false;
+    this.question=this.queue[this.index++]; this.typed=''; this.guideOffset=0; this.questionMisses=0; this.rescued=false; this.locked=false;
     this.guided=!(this.seen[this.question.id]>0); this.seen[this.question.id]=(this.seen[this.question.id]||0)+1;
     this.el.card.classList.remove('shake','training-clear');
     this.el.player.classList.remove('training-cheer'); this.el.partner.classList.remove('training-cheer');
@@ -211,12 +211,12 @@ class Training {
       }
       Storage.save(data); return;
     }
-    this.typed=result.value; this.correctKeys++; data.totals.totalKeys++; audio.key(); this.updateInput(); Storage.save(data);
+    this.typed=result.value; this.guideOffset=result.guideOffset; this.correctKeys++; data.totals.totalKeys++; audio.key(); this.updateInput(); Storage.save(data);
     if(result.complete) this.completeQuestion();
   }
   updateInput() {
     const showRemaining=this.guided||this.rescued;
-    const remaining=showRemaining?this.question.display.slice(Math.min(this.typed.length,this.question.display.length)):'';
+    const remaining=showRemaining?this.question.display.slice(Math.min(this.guideOffset??this.typed.length,this.question.display.length)):'';
     this.el.input.innerHTML=`<span class="typed">${escapeHtml(this.typed)}</span><span class="remaining">${escapeHtml(remaining)}</span>`;
   }
   completeQuestion() {
@@ -311,7 +311,7 @@ class Battle {
       this.lastMonsterId=this.monster.id;
       this.queueMonster(this.kills+2);
     }
-    this.lastQuestion=this.question; this.typed=''; this.locked=false;
+    this.lastQuestion=this.question; this.typed=''; this.guideOffset=0; this.locked=false;
     this.el.enemyImg.src=monsterUrl(this.monster); this.el.enemyImg.alt='迫ってくるモンスター';
     this.el.enemy.className='enemy-slot';
     if(this.monster.category==='evolved') this.el.enemy.classList.add('evolved');
@@ -366,12 +366,12 @@ class Battle {
     e.preventDefault();
     const result=typeKey(this.question,this.typed,e.key);
     if(!result.ok){this.mistypes++; audio.miss(); this.el.card.classList.remove('shake'); void this.el.card.offsetWidth; this.el.card.classList.add('shake'); return;}
-    this.typed=result.value; this.correctKeys++; audio.key(); this.updateInput();
+    this.typed=result.value; this.guideOffset=result.guideOffset; this.correctKeys++; audio.key(); this.updateInput();
     if(result.complete) this.completeQuestion();
   }
   updateInput(){
     const reference=this.question?.display||'';
-    const remaining=this.showRomaji?reference.slice(Math.min(this.typed.length,reference.length)):'';
+    const remaining=this.showRomaji?reference.slice(Math.min(this.guideOffset??this.typed.length,reference.length)):'';
     this.el.input.innerHTML=`<span class="typed">${escapeHtml(this.typed)}</span><span class="remaining">${escapeHtml(remaining)}</span>`;
   }
   completeQuestion(){
@@ -419,7 +419,7 @@ class Battle {
     this.el.enemy.classList.add('attack'); audio.damage(); this.playerAction('damage');
     recordQuestion(data,this.question,false,this.usedHint); if(this.mode!=='grandmaster') enqueueReview(data,this.question,this.kills+3+Math.floor(Math.random()*3));
     if(this.mode==='master'||this.mode==='grandmaster') this.showHint(2);
-    this.typed=''; this.updateInput();
+    this.typed=''; this.guideOffset=0; this.updateInput();
     if(this.hp<=0){this.timer=setTimeout(()=>this.finish('GAME OVER'),500);return;}
     this.timer=setTimeout(()=>this.nextQuestion(true),480);
   }
