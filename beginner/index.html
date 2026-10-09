@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>はじめてのタイピング｜ホームポジション</title>
+<style>
+:root{--ink:#172b4d;--muted:#63738a;--paper:#f4f7fb;--line:#dce4ef;--blue:#2458c6;--good:#16835f;--focus:#ffcf5a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:system-ui,-apple-system,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif}
+button{font:inherit;cursor:pointer}
+button:focus-visible{outline:3px solid #f0a51b;outline-offset:3px}
+header{background:#fff;border-bottom:1px solid var(--line);padding:18px clamp(16px,4vw,42px);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{font-weight:800;letter-spacing:.02em}.tag{font-size:.8rem;color:var(--muted)}
+main{max-width:1050px;margin:0 auto;padding:clamp(16px,3vw,30px)}
+.intro{display:flex;justify-content:space-between;align-items:end;gap:16px;margin-bottom:20px}.eyebrow{color:var(--blue);font-size:.82rem;font-weight:800;letter-spacing:.08em}
+h1{font-size:clamp(1.55rem,4vw,2.3rem);line-height:1.25;margin:5px 0 8px}p{line-height:1.7;margin:0}.sub{color:var(--muted);max-width:650px}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:22px 0}
+.step{background:#fff;border:1px solid var(--line);border-radius:14px;padding:13px 15px;text-align:left;color:var(--ink);min-height:76px}
+.step[aria-current=true]{border:2px solid var(--blue);padding:12px 14px;background:#eef4ff}
+.step small{display:block;color:var(--muted);margin-bottom:4px}.step strong{font-size:1rem}
+.panel{background:#fff;border:1px solid var(--line);border-radius:20px;padding:clamp(16px,3vw,28px);box-shadow:0 8px 28px #19365d0b}
+.lesson-head{display:flex;align-items:start;gap:12px;margin-bottom:20px}.lesson-number{background:#e8efff;color:var(--blue);font-weight:900;border-radius:12px;min-width:42px;height:42px;display:grid;place-items:center}
+h2{font-size:1.25rem;margin:0 0 5px}.lesson-copy{color:var(--muted)}
+.keyboard-wrap{background:#edf1f7;border:1px solid #d6deea;border-radius:15px;padding:clamp(8px,2vw,18px);overflow:hidden}
+.keyboard{display:grid;gap:6px;max-width:850px;margin:auto}
+.key-row{display:flex;justify-content:center;gap:clamp(3px,.7vw,7px)}
+.key{position:relative;flex:1;min-width:0;max-width:65px;height:clamp(39px,6vw,55px);border:1px solid #c8d2e1;border-bottom-width:4px;border-radius:8px;background:#fff;color:#283a55;font-weight:800;font-size:clamp(.72rem,1.7vw,1rem);transition:transform .08s,background .12s,border-color .12s;display:flex;align-items:center;justify-content:center}
+.key.wide{max-width:90px;flex:1.5}.key.space{max-width:360px;flex:5;height:38px;font-size:.72rem;color:#718096}
+.key.home{border-color:#6b8bd1}.key.home::after{content:"";position:absolute;bottom:7px;width:12px;height:3px;border-radius:3px;background:#7d8ba0}
+.key.active{background:var(--focus)!important;border-color:#d89d18;transform:translateY(3px);border-bottom-width:1px}
+.key.done{background:#d8f4e9;border-color:#72c7a7}
+.finger-1{background:#e7efff}.finger-2{background:#e1f5ef}.finger-3{background:#fff0d7}.finger-4{background:#f8e7f3}.finger-5{background:#e9e5ff}
+.key-legend{display:flex;flex-wrap:wrap;gap:8px 14px;justify-content:center;margin-top:14px;color:var(--muted);font-size:.78rem}
+.dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:middle}
+.feedback{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;margin-top:20px}
+.target{font-size:clamp(1.25rem,3vw,1.8rem);font-weight:850}.target span{color:var(--blue)}
+.status{color:var(--muted);font-size:.92rem;margin-top:5px;min-height:1.6em}
+.actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border:1px solid var(--line);background:#fff;color:var(--ink);padding:11px 16px;border-radius:11px;font-weight:750}.btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}.btn:disabled{opacity:.45;cursor:not-allowed}
+.notice{font-size:.83rem;color:var(--muted);margin-top:18px}
+@media(max-width:650px){.intro{display:block}.tag{display:none}.steps{gap:6px}.step{padding:10px 8px;min-height:72px}.step strong{font-size:.87rem}.step small{font-size:.7rem}.feedback{grid-template-columns:1fr}.actions .btn{flex:1}.key-row{gap:3px}.key{height:38px;border-radius:5px}.key.space{height:30px}}
+</style>
+</head>
+<body>
+<header><div class="brand">TT-sensei <span class="tag">｜ タイピング基礎練習・試作</span></div><span class="tag">時間制限なし・何度でも練習</span></header>
+<main>
+<section class="intro"><div><div class="eyebrow">FIRST STEP</div><h1>はじめてのタイピング</h1><p class="sub">キーボードの場所と指の使い方を、ひとつずつ覚えよう。あわてなくて大丈夫。</p></div></section>
+<nav class="steps" aria-label="練習ステップ">
+<button class="step" data-lesson="0" aria-current="true"><small>STEP 1</small><strong>指を置こう</strong></button>
+<button class="step" data-lesson="1" aria-current="false"><small>STEP 2</small><strong>キーを押そう</strong></button>
+<button class="step" data-lesson="2" aria-current="false"><small>STEP 3</small><strong>母音を打とう</strong></button>
+</nav>
+<section class="panel" aria-live="polite">
+<div class="lesson-head"><div class="lesson-number" id="lessonNumber">1</div><div><h2 id="lessonTitle">ホームポジションを見つけよう</h2><p class="lesson-copy" id="lessonCopy">まずは F と J の小さな突起を指で探そう。画面を見なくても場所が分かる目印だよ。</p></div></div>
+<div class="keyboard-wrap"><div class="keyboard" id="keyboard" aria-label="キーボード図"></div><div class="key-legend">
+<span><i class="dot finger-1"></i>小指</span><span><i class="dot finger-2"></i>薬指</span><span><i class="dot finger-3"></i>中指</span><span><i class="dot finger-4"></i>人差し指</span><span><i class="dot finger-5"></i>親指</span>
+</div></div>
+<div class="feedback"><div><div class="target" id="target">指を F と J に置こう</div><div class="status" id="status" role="status">F と J のキーを見つけて、突起を確かめよう。</div></div><div class="actions"><button class="btn" id="hintButton">ヒント</button><button class="btn primary" id="nextButton">できた！ 次へ</button></div></div>
+<p class="notice" id="notice">この画面は練習用の試作です。入力内容や成績は保存しません。</p>
+</section>
+</main>
+<script>
+(()=>{
+const rows=[
+[{k:'1',f:1},{k:'2',f:2},{k:'3',f:3},{k:'4',f:4},{k:'5',f:4},{k:'6',f:4},{k:'7',f:4},{k:'8',f:3},{k:'9',f:2},{k:'0',f:1},{k:'-',f:1},{k:'^',f:1}],
+[{k:'Q',f:1},{k:'W',f:2},{k:'E',f:3},{k:'R',f:4},{k:'T',f:4},{k:'Y',f:4},{k:'U',f:4},{k:'I',f:3},{k:'O',f:2},{k:'P',f:1},{k:'@',f:1}],
+[{k:'A',f:1,h:true},{k:'S',f:2,h:true},{k:'D',f:3,h:true},{k:'F',f:4,h:true},{k:'G',f:4,h:false},{k:'H',f:4,h:false},{k:'J',f:4,h:true},{k:'K',f:3,h:true},{k:'L',f:2,h:true},{k:';',f:1,h:true}],
+[{k:'Z',f:1},{k:'X',f:2},{k:'C',f:3},{k:'V',f:4},{k:'B',f:4},{k:'N',f:4},{k:'M',f:4},{k:',',f:3},{k:'.',f:2},{k:'/',f:1}],
+];
+const lessons=[
+{title:'ホームポジションを見つけよう',copy:'まずは F と J の小さな突起を指で探そう。画面を見なくても場所が分かる目印だよ。',target:'指を F と J に置こう',status:'F と J のキーを見つけて、突起を確かめよう。',keys:['F','J'],mode:'place',notice:'まだキーを押さなくてOK。FとJに人差し指を置き、ほかの指は A・S・D と K・L・; にそっと置こう。'},
+{title:'ホームポジションのキーを押そう',copy:'指を置いたまま、光っているキーを順番に押してみよう。押したら、指を元の場所に戻そう。',target:'まずは A を押そう',status:'キーボードで A を押してね。',keys:['A','S','D','F','J','K','L',';'],mode:'type',notice:'正しいキーを押すと次に進むよ。まちがえても大丈夫。ゆっくりやってみよう。'},
+{title:'母音を打ってみよう',copy:'ローマ字入力でよく使う母音を練習しよう。画面の文字を見て、対応するキーを押そう。',target:'「あ」を打とう',status:'A を押してね。',keys:['A','I','U','E','O'],mode:'vowels',notice:'この練習では A・I・U・E・O のキーを使うよ。ローマ字入力の基本になる文字だよ。'}
+];
+let lessonIndex=0,stepIndex=0,hint=false;
+const keyboard=document.getElementById('keyboard');
+const keyEls=new Map();
+rows.forEach((row,ri)=>{const el=document.createElement('div');el.className='key-row';row.forEach(o=>{const b=document.createElement('div');b.className='key finger-'+o.f+(o.h?' home':'');b.dataset.key=o.k;b.textContent=o.k;if(o.k==='F'||o.k==='J')b.title='人差し指・突起の目印';el.appendChild(b);keyEls.set(o.k,b)});keyboard.appendChild(el)});
+const bottom=document.createElement('div');bottom.className='key-row';const space=document.createElement('div');space.className='key space finger-5';space.textContent='スペース（親指）';bottom.appendChild(space);keyboard.appendChild(bottom);
+const $=id=>document.getElementById(id);
+function expected(){const l=lessons[lessonIndex];return l.keys[Math.min(stepIndex,l.keys.length-1)]}
+function render(){
+const l=lessons[lessonIndex];document.querySelectorAll('.step').forEach((b,i)=>b.setAttribute('aria-current',String(i===lessonIndex)));
+$('lessonNumber').textContent=lessonIndex+1;$('lessonTitle').textContent=l.title;$('lessonCopy').textContent=l.copy;$('notice').textContent=l.notice;
+keyEls.forEach(k=>k.classList.remove('active','done'));
+if(l.mode==='place'){['F','J','A','S','D','K','L',';'].forEach(k=>keyEls.get(k)?.classList.add('active'));$('target').textContent=l.target;$('status').textContent=hint?'人差し指は F と J。ほかの指は A・S・D と K・L・; に置くよ。':l.status;$('nextButton').textContent='置けた！ 次へ'}
+else{l.keys.slice(0,stepIndex).forEach(k=>keyEls.get(k)?.classList.add('done'));const k=expected();keyEls.get(k)?.classList.add('active');$('target').textContent=l.mode==='vowels'?['「あ」','「い」','「う」','「え」','「お」'][stepIndex]+' を打とう':k+' を押そう';$('status').textContent=hint?'光っているキーを押してね。押したら、指をホームポジションに戻そう。':(l.mode==='vowels'?k+' を押してね。': 'キーボードで '+k+' を押してね。');$('nextButton').textContent=stepIndex===l.keys.length-1?'この練習を終える':'次のキーへ';}
+$('hintButton').textContent=hint?'ヒントを閉じる':'ヒント';
+}
+function next(){const l=lessons[lessonIndex];if(l.mode==='place'){lessonIndex=1;stepIndex=0;hint=false;render();return}if(stepIndex<l.keys.length-1){stepIndex++;hint=false;render();return}if(lessonIndex<lessons.length-1){lessonIndex++;stepIndex=0;hint=false;render();return}$('target').textContent='練習できたね！';$('status').textContent='母音の練習はおしまい。もう一度練習してもいいよ。';$('nextButton').textContent='最初から';$('nextButton').onclick=()=>{lessonIndex=0;stepIndex=0;hint=false;$('nextButton').onclick=next;render()};}
+document.querySelectorAll('.step').forEach(b=>b.addEventListener('click',()=>{lessonIndex=Number(b.dataset.lesson);stepIndex=0;hint=false;$('nextButton').onclick=next;render()}));
+$('nextButton').addEventListener('click',next);
+$('hintButton').addEventListener('click',()=>{hint=!hint;render()});
+window.addEventListener('keydown',e=>{if(e.ctrlKey||e.metaKey||e.altKey)return;const k=e.key.length===1?e.key.toUpperCase():e.key;if(!keyEls.has(k))return;e.preventDefault();const l=lessons[lessonIndex];if(l.mode==='place'){if(k==='F'||k==='J'){$('status').textContent='そう！ '+k+' は人差し指の目印だよ。両方の突起を確かめよう。';keyEls.get(k)?.classList.add('done')}return}if(k===expected()){keyEls.get(k)?.classList.add('done');$('status').textContent='いいね！ 指を元の位置に戻そう。';setTimeout(()=>{if(expected()===k)next()},350)}else{$('status').textContent='おしい！ 光っているキーを探して、もう一度。'}});
+render();
+})();
+</script>
+</body>
+</html>
