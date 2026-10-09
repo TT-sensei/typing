@@ -52,7 +52,7 @@ function renderStart() {
             <div class="range-picker">
               <span class="section-label">${setup.mode==='grandmaster'?'ローマ字表示':'学習する範囲'}</span>
               ${setup.mode==='grandmaster'
-                ? `<select class="range-select" id="grandmaster-romaji">${[['shown','ローマ字あり'],['hidden','ローマ字なし']].map(([v,l])=>`<option value="${v}" ${setup.grandmasterRomaji===(v==='shown')?'selected':''}>${l}</option>`).join('')}</select>`
+                ? `<div class="range-options" aria-label="ローマ字表示">${[['shown','ローマ字あり'],['hidden','ローマ字なし']].map(([v,l])=>`<button type="button" class="range-card" data-grandmaster-romaji="${v}" aria-pressed="${setup.grandmasterRomaji===(v==='shown')}"><span class="range-card-title">${l}</span></button>`).join('')}</div>`
                 : `<div class="range-options" aria-label="学習する範囲">${rangeOptions(setup.mode).map(([v,l])=>{const parts=l.split('｜');return `<button type="button" class="range-card" data-range="${v}" aria-pressed="${setup.range===v}"><span class="range-card-title">${escapeHtml(parts[0])}</span>${parts[1]?`<span class="range-card-note">${escapeHtml(parts[1])}</span>`:''}</button>`;}).join('')}</div>`}
             </div>
           </div>
@@ -79,7 +79,7 @@ function renderStart() {
   });
   app.querySelectorAll('[data-character]').forEach(btn=>btn.onclick=()=>{ setup.character=btn.dataset.character; data.selectedCharacter=setup.character; Storage.save(data); renderStart(); });
   if(setup.mode==='grandmaster') {
-    app.querySelector('#grandmaster-romaji').onchange=e=>setup.grandmasterRomaji=e.target.value==='shown';
+    app.querySelectorAll('[data-grandmaster-romaji]').forEach(btn=>btn.onclick=()=>{ setup.grandmasterRomaji=btn.dataset.grandmasterRomaji==='shown'; renderStart(); });
   } else {
     app.querySelectorAll('[data-range]').forEach(btn=>btn.onclick=()=>{ setup.range=btn.dataset.range; renderStart(); });
   }
