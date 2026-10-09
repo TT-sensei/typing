@@ -99,11 +99,44 @@ export function makeQuestion(kana, meta={}) {
   return { id:kana, kana, display, accepts:acceptedRomaji(kana), ...meta };
 }
 
+function tokenGuideLength(tokens,i) {
+  if(tokens[i]==='っ') return 1;
+  return (ROMAJI[tokens[i]]?.show || '').length;
+}
+
+function guideOffsetForInput(tokens,input) {
+  function visit(tokenIndex,inputPos,offset) {
+    if(inputPos===input.length) return offset;
+    if(tokenIndex>=tokens.length) return null;
+
+    const choices=tokenChoices(tokens,tokenIndex);
+    const guideLength=tokenGuideLength(tokens,tokenIndex);
+    const rest=input.slice(inputPos);
+
+    for(const choice of choices) {
+      if(choice.startsWith(rest) && rest.length<choice.length) {
+        return offset+Math.min(rest.length,guideLength);
+      }
+      if(input.startsWith(choice,inputPos)) {
+        const found=visit(tokenIndex+1,inputPos+choice.length,offset+guideLength);
+        if(found!==null) return found;
+      }
+    }
+    return null;
+  }
+  return visit(0,0,0) ?? input.length;
+}
+
 export function typeKey(question, current, key) {
   const next=(current+key).toLowerCase();
   const tokens=tokenizeKana(question.kana);
   if(!matchesPrefix(tokens,next)) return {ok:false, complete:false, value:current};
-  return {ok:true, complete:matchesComplete(tokens,next), value:next};
+  return {
+    ok:true,
+    complete:matchesComplete(tokens,next),
+    value:next,
+    guideOffset:guideOffsetForInput(tokens,next)
+  };
 }
 
 export function hintPattern(display) {
