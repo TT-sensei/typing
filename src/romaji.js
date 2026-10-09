@@ -22,6 +22,16 @@ function tokenChoices(tokens,i) {
     const nextShow=ROMAJI[tokens[i+1]]?.show || '';
     return /^[aiueoy]/.test(nextShow) ? ["n'",'nn'] : ['n','nn'];
   }
+  if(token==='ー') {
+    // 長音符は「-」を基本にし、直前の音の母音で打つ方法も受け付ける。
+    // 例：カレー → kare- / karee、コーヒー → koohii
+    for(let j=i-1;j>=0;j--) {
+      const show=ROMAJI[tokens[j]]?.show || '';
+      const vowel=show.match(/[aiueo]$/)?.[0];
+      if(vowel) return ['-',vowel];
+    }
+    return ['-'];
+  }
   return ROMAJI[token]?.accepts || [];
 }
 
