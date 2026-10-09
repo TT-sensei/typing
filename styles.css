@@ -278,25 +278,3 @@ h1 { margin: 0; font-size: clamp(2rem, 4.5vw, 4.25rem); line-height: .98; letter
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration:.001ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
 }
-
-
-/* Beginner practice entry: an additive link to the isolated practice page. */
-.beginner-entry {
-  display:flex; align-items:center; justify-content:space-between; gap:18px;
-  margin:18px 0; padding:18px 20px; border:1px solid #cbd8ee; border-radius:18px;
-  background:linear-gradient(115deg,#f0f5ff,#fff 72%);
-}
-.beginner-entry > div { display:grid; gap:5px; }
-.beginner-entry strong { color:var(--text, #172b4d); font-size:1.02rem; }
-.beginner-entry p { margin:0; color:var(--muted, #63738a); font-size:.9rem; line-height:1.5; }
-.beginner-entry-link {
-  flex-shrink:0; display:inline-flex; align-items:center; gap:12px; justify-content:center;
-  padding:12px 17px; border-radius:12px; background:#2458c6; color:#fff;
-  font-weight:850; text-decoration:none; white-space:nowrap;
-}
-.beginner-entry-link:hover { filter:brightness(1.08); transform:translateY(-1px); }
-.beginner-entry-link:focus-visible { outline:3px solid #ffcf5a; outline-offset:3px; }
-@media (max-width:600px) {
-  .beginner-entry { align-items:stretch; flex-direction:column; padding:16px; }
-  .beginner-entry-link { width:100%; }
-}
