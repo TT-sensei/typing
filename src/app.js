@@ -41,7 +41,12 @@ function renderStart() {
           <span class="total-record">累計 ${data.totals.totalKeys.toLocaleString()} キー</span>
           <button class="sound-button" id="sound-toggle" aria-pressed="${data.sound}">${data.sound?'🔊 音 ON':'🔇 音 OFF'}</button>
         </div>
-        <div class="mode-grid" aria-label="バトルを選ぶ">
+        <div class="mode-grid practice-grid" aria-label="練習を選ぶ">
+          <button class="mode-card practice-card" id="start-practice"><span class="mode-label">練習</span><span class="mode-desc">時間を気にせず、選んだ範囲をくり返し練習</span><span class="best">自分のペースで</span></button>
+          <button class="mode-card weakness-card" id="start-training"><span class="mode-label">苦手特訓</span><span class="mode-desc">${training.fallback?'まずは基礎からスタート':`苦手候補 ${training.weakCount}こを仲間と特訓`}</span><span class="best">時間制限なし</span></button>
+        </div>
+        <p class="section-label battle-section-label">バトルを選ぶ</p>
+        <div class="mode-grid battle-grid" aria-label="バトルを選ぶ">
           ${Object.entries(MODE_INFO).map(([id,m])=>`<button class="mode-card" data-mode="${id}" aria-pressed="${setup.mode===id}"><span class="mode-label">${m.name}</span><span class="mode-desc">${m.desc}</span><span class="best">BEST ${data.bests[id].score.toLocaleString()}</span></button>`).join('')}
         </div>
         <section class="setup-panel">
@@ -58,13 +63,7 @@ function renderStart() {
           </div>
           <button class="start-button" id="start-game">${setup.mode==='grandmaster'?'120秒バトル START!':'60秒バトル START!'}</button>
         </section>
-        <section class="training-panel">
-          <div class="training-copy">
-            <span class="training-icon" aria-hidden="true">⚔️</span>
-            <div><span class="section-label">苦手ローマ字特訓</span><strong>${training.fallback?'まずは基礎を練習しよう！':`苦手候補 ${training.weakCount}こ`}</strong><p>${training.fallback?'プレイすると、きみに合った問題へ変わります。':'苦手だった問題を、仲間と何度でも練習できます。'}</p></div>
-          </div>
-          <button class="training-start" id="start-training">時間無制限で特訓する</button>
-        </section>
+
         <details class="collection">
           <summary><span>🏅 バッジコレクション</span><span>${acquired.size} / ${BADGES.length}</span></summary>
           <div class="badge-grid">${BADGES.map(b=>{const got=acquired.has(b.id);return `<div class="badge ${got?'':'locked'}" title="${escapeHtml(b.desc)}"><div class="badge-frame">${got?`<img loading="lazy" src="${b.image}" alt="${escapeHtml(b.name)}">`:'<span class="badge-silhouette" aria-hidden="true">?</span>'}</div><span class="badge-name">${got?escapeHtml(b.name):'？？？'}</span></div>`;}).join('')}</div>
@@ -85,7 +84,8 @@ function renderStart() {
   }
   app.querySelector('#sound-toggle').onclick=()=>{ data.sound=!data.sound; audio.setEnabled(data.sound); Storage.save(data); renderStart(); };
   app.querySelector('#start-game').onclick=()=>{ audio.ensure(); startGame(); };
-  app.querySelector('#start-training').onclick=()=>{ audio.ensure(); startTraining(training); };
+  app.querySelector('#start-practice').onclick=()=>{ audio.ensure(); startTraining({pool:questionPool(),weakCount:0,fallback:false,modeLabel:'練習',startMessage:'自分のペースで、くり返し練習しよう！'}); };
+  app.querySelector('#start-training').onclick=()=>{ audio.ensure(); startTraining({...training,modeLabel:'苦手特訓',startMessage:training.fallback?'基礎からスタート！':'苦手をいっしょに克服しよう！'}); };
 }
 
 function questionPool() {
@@ -169,7 +169,7 @@ class Training {
     const background=BATTLE_BACKGROUNDS[Math.floor(Math.random()*BATTLE_BACKGROUNDS.length)]||BATTLE_BACKGROUNDS[0];
     app.innerHTML=`<section class="screen battle-screen training-screen">
       <header class="hud training-hud">
-        <div class="hud-stat"><span class="hud-label">MODE</span><span class="hud-value">苦手特訓</span></div>
+        <div class="hud-stat"><span class="hud-label">MODE</span><span class="hud-value">${this.modeLabel||'苦手特訓'}</span></div>
         <div class="hud-stat"><span class="hud-label">CLEAR</span><span id="training-clears" class="hud-value">0</span></div>
         <div class="hud-stat"><span class="hud-label">れんぞく</span><span id="training-streak" class="hud-value">0</span></div>
         <div class="hud-stat"><span class="hud-label">もんだい</span><span class="hud-value">${this.pool.length}こ</span></div>
@@ -185,7 +185,7 @@ class Training {
           <div class="hint-note" id="hint"></div>
           <button class="training-stop" id="stop-training">特訓をやめる</button>
         </div>
-        <div class="training-message" id="training-message">${this.fallback?'基礎データからスタート！':'苦手をいっしょに克服しよう！'}</div>
+        <div class="training-message" id="training-message">${this.startMessage||(this.fallback?'基礎データからスタート！':'苦手をいっしょに克服しよう！')}</div>
       </div>
     </section>`;
     this.el={card:app.querySelector('#problem-card'),kana:app.querySelector('#kana'),romaji:app.querySelector('#romaji'),input:app.querySelector('#input'),hint:app.querySelector('#hint'),clears:app.querySelector('#training-clears'),streak:app.querySelector('#training-streak'),player:app.querySelector('#training-player'),partner:app.querySelector('#training-partner'),keyboard:app.querySelector('#training-keyboard'),message:app.querySelector('#training-message')};
