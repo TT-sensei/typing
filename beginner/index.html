@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="color-scheme" content="light">
-<title>はじめてのタイピング｜ホームポジション</title>
+<meta name="color-scheme" content="dark">
+<title>冒険者のタイピング修行｜NAVI FANTASY</title>
 <style>
 :root{--ink:#172b4d;--muted:#63738a;--paper:#f4f7fb;--line:#dce4ef;--blue:#2458c6;--good:#16835f;--focus:#ffcf5a}
 *{box-sizing:border-box}
@@ -40,12 +40,44 @@ h2{font-size:1.25rem;margin:0 0 5px}.lesson-copy{color:var(--muted)}
 .actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border:1px solid var(--line);background:#fff;color:var(--ink);padding:11px 16px;border-radius:11px;font-weight:750}.btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}.btn:disabled{opacity:.45;cursor:not-allowed}
 .notice{font-size:.83rem;color:var(--muted);margin-top:18px}
 @media(max-width:650px){.intro{display:block}.tag{display:none}.steps{gap:6px}.step{padding:10px 8px;min-height:72px}.step strong{font-size:.87rem}.step small{font-size:.7rem}.feedback{grid-template-columns:1fr}.actions .btn{flex:1}.key-row{gap:3px}.key{height:38px;border-radius:5px}.key.space{height:30px}}
+
+/* NAVI FANTASY skin: visual layer only; practice behavior remains unchanged. */
+:root{--ink:#f4edda;--muted:#c2cbe0;--paper:#08152b;--line:rgba(203,220,255,.24);--blue:#79a9ff;--good:#7cf0b3;--focus:#ffe17a}
+body{min-height:100vh;background:linear-gradient(180deg,rgba(5,13,29,.66),rgba(7,18,39,.9)),url('https://tt-sensei.github.io/navi-character-/assets/web/fantasy/backgrounds/town.webp') center/cover fixed;color:var(--ink)}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;background:radial-gradient(ellipse at 50% 0%,rgba(91,139,224,.24),transparent 60%)}
+header{background:rgba(5,16,36,.88);border-bottom:1px solid rgba(214,229,255,.2);box-shadow:0 8px 28px #02091655;color:#fff}
+.brand{letter-spacing:.09em}.brand-mark{color:#ffdf78;margin-right:8px;font-size:1.2rem}
+main{max-width:1120px}
+.intro{align-items:center;min-height:230px;padding:18px 22px;border:1px solid rgba(218,230,255,.22);border-radius:22px;background:linear-gradient(110deg,rgba(6,21,48,.93),rgba(16,42,80,.72));box-shadow:0 18px 50px #02091655;overflow:hidden}
+.intro-copy{position:relative;z-index:2;flex:1}.eyebrow{color:#ffdf78;letter-spacing:.14em}
+h1{color:#fff5d8;text-shadow:0 3px 18px #0008}.sub{color:#d1def4}
+.intro-hero{position:relative;align-self:stretch;flex:0 0 230px;min-height:190px;display:flex;align-items:end;justify-content:center}
+.intro-hero img{height:225px;max-width:100%;object-fit:contain;filter:drop-shadow(0 8px 14px #02091699)}
+.speech{position:absolute;top:12px;right:0;max-width:190px;padding:9px 12px;border:1px solid #f4d784;border-radius:13px;background:#fff5d8;color:#273c62;font-weight:850;font-size:.84rem;box-shadow:0 5px 16px #0004}
+.speech::after{content:"";position:absolute;bottom:-7px;left:28px;width:12px;height:12px;transform:rotate(45deg);background:#fff5d8;border-right:1px solid #f4d784;border-bottom:1px solid #f4d784}
+.quest-note{display:flex;align-items:center;gap:10px;margin-top:16px;color:#e4edff;font-size:.88rem;font-weight:750}
+.quest-note span{padding:4px 8px;border-radius:6px;background:#e8c76d;color:#27334c;font-size:.68rem;font-weight:1000;letter-spacing:.08em}
+.steps{gap:10px}.step{background:rgba(11,29,60,.88);border-color:rgba(202,220,255,.24);color:#f6f0df;box-shadow:0 6px 18px #02091633}
+.step small{color:#b8c9e9}.step[aria-current=true]{border-color:#ffdc78;background:linear-gradient(135deg,rgba(78,87,119,.95),rgba(25,53,91,.96));box-shadow:0 0 0 2px #ffdc7826,0 8px 22px #02091655}
+.panel{background:linear-gradient(145deg,rgba(7,22,48,.97),rgba(12,32,64,.97));border-color:rgba(209,225,255,.25);box-shadow:0 20px 55px #02091666}
+.lesson-number{background:linear-gradient(145deg,#ffebaa,#d8a944);color:#2a3651;box-shadow:0 3px 0 #9e7125}
+.lesson-copy{color:#c3d1eb}
+.keyboard-wrap{background:linear-gradient(145deg,#101f3b,#172b4b);border-color:#435777;box-shadow:inset 0 1px 0 #ffffff12}
+.key{background:#e9eef8;color:#233650;border-color:#b7c5dd;border-bottom-color:#8495b1}
+.key.home{border-color:#83a7ed}.key.active{background:#ffe17a!important;border-color:#e4b52e;color:#352c15;box-shadow:0 0 16px #ffdc7866}
+.key.done{background:#b9f0d9;border-color:#63c59c;color:#153c34}
+.key-legend{color:#c2cfe6}.dot{box-shadow:0 0 0 1px #ffffff22}
+.target{color:#fff5dc}.target span{color:#ffdf78}.status{color:#c2d2ec}
+.btn{background:#172d50;color:#f7f0df;border-color:#4a6082}.btn.primary{background:linear-gradient(#ffe99b,#e9bd51);color:#29334b;border-color:#e9bd51;box-shadow:0 4px 0 #9d7428}
+.notice{color:#9eafce}
+@media(max-width:650px){.intro{position:relative;min-height:245px;padding:18px}.intro-hero{position:absolute;right:-5px;bottom:0;width:140px;min-height:150px;opacity:.82}.intro-hero img{height:165px}.speech{top:12px;right:8px;max-width:145px;font-size:.72rem}.intro-copy{max-width:78%}.quest-note{align-items:flex-start;font-size:.78rem}.tag{color:#aebfdf}}
+
 </style>
 </head>
 <body>
-<header><div class="brand">TT-sensei <span class="tag">｜ タイピング基礎練習・試作</span></div><span class="tag">時間制限なし・何度でも練習</span></header>
+<header><div class="brand"><span class="brand-mark">✦</span> NAVI FANTASY <span class="tag">｜ 冒険者のタイピング修行</span></div><span class="tag">時間制限なし・何度でも練習</span></header>
 <main>
-<section class="intro"><div><div class="eyebrow">FIRST STEP</div><h1>はじめてのタイピング</h1><p class="sub">キーボードの場所と指の使い方を、ひとつずつ覚えよう。あわてなくて大丈夫。</p></div></section>
+<section class="intro"><div class="intro-copy"><div class="eyebrow">ADVENTURER TRAINING • 01</div><h1>冒険者のタイピング修行</h1><p class="sub">冒険に出る前に、仲間といっしょにキーボードの使い方を覚えよう。あわてなくて大丈夫。</p><div class="quest-note"><span>QUEST</span> ホームポジションの力を身につけよう</div></div><div class="intro-hero" aria-label="魔導士のかい"><img src="https://tt-sensei.github.io/navi-character-/assets/web/fantasy/kai-mage.webp" alt="魔導士のかい"><div class="speech">まずは指の置き場所から！</div></div></section>
 <nav class="steps" aria-label="練習ステップ">
 <button class="step" data-lesson="0" aria-current="true"><small>STEP 1</small><strong>指を置こう</strong></button>
 <button class="step" data-lesson="1" aria-current="false"><small>STEP 2</small><strong>キーを押そう</strong></button>
