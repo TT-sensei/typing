@@ -42,7 +42,7 @@ function renderStart() {
           <button class="sound-button" id="sound-toggle" aria-pressed="${data.sound}">${data.sound?'🔊 音 ON':'🔇 音 OFF'}</button>
         </div>
         <div class="mode-grid practice-grid" aria-label="練習を選ぶ">
-          <button class="mode-card practice-card" id="start-practice"><span class="mode-label">練習</span><span class="mode-desc">時間を気にせず、選んだ範囲をくり返し練習</span><span class="best">自分のペースで</span></button>
+          <button class="mode-card practice-card" id="start-practice"><span class="mode-label">練習</span><span class="mode-desc">ホームポジションからタイピングの基本を練習</span><span class="best">基本からスタート</span></button>
           <button class="mode-card weakness-card" id="start-training"><span class="mode-label">苦手特訓</span><span class="mode-desc">${training.fallback?'まずは基礎からスタート':`苦手候補 ${training.weakCount}こを仲間と特訓`}</span><span class="best">時間制限なし</span></button>
         </div>
         <p class="section-label battle-section-label">バトルを選ぶ</p>
@@ -84,7 +84,7 @@ function renderStart() {
   }
   app.querySelector('#sound-toggle').onclick=()=>{ data.sound=!data.sound; audio.setEnabled(data.sound); Storage.save(data); renderStart(); };
   app.querySelector('#start-game').onclick=()=>{ audio.ensure(); startGame(); };
-  app.querySelector('#start-practice').onclick=()=>{ audio.ensure(); startTraining({pool:questionPool(),weakCount:0,fallback:false,modeLabel:'練習',startMessage:'自分のペースで、くり返し練習しよう！'}); };
+  app.querySelector('#start-practice').onclick=()=>{ window.location.href='/typing/beginner/'; };
   app.querySelector('#start-training').onclick=()=>{ audio.ensure(); startTraining({...training,modeLabel:'苦手特訓',startMessage:training.fallback?'基礎からスタート！':'苦手をいっしょに克服しよう！'}); };
 }
 
