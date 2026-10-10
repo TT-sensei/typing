@@ -199,7 +199,7 @@ h1 { margin: 0; font-size: clamp(2rem, 4.5vw, 4.25rem); line-height: .98; letter
 .typing-key.finger-2 { background:#c9f0df; border-color:#81c5aa; }
 .typing-key.finger-3 { background:#ffedb2; border-color:#d9bd68; }
 .typing-key.finger-4 { background:#d9d5ff; border-color:#aaa2e8; }
-.typing-key.next-key { background:#fff0a0; color:#302610; border:2px solid #fff5c6; border-bottom-width:4px; box-shadow:0 0 0 2px #ffdc7866,0 0 14px #ffdc78aa; transform:translateY(-2px); }
+.typing-key.next-key { background:#fff0a0; color:#302610; border:3px solid #ffdc78; border-bottom-width:4px; box-shadow:none; transform:none; }
 .typing-finger-legend { display:flex; justify-content:center; align-items:center; flex-wrap:wrap; gap:3px 12px; margin-top:5px; color:#d5e0f1; font-size:clamp(.52rem,1vw,.68rem); font-weight:800; }
 .typing-finger-legend span { display:flex; align-items:center; gap:4px; }
 .finger-dot { display:inline-block; width:8px; height:8px; border-radius:2px; }
