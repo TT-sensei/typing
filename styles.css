@@ -251,7 +251,7 @@ h1 { margin: 0; font-size: clamp(2rem, 4.5vw, 4.25rem); line-height: .98; letter
 .primary { border:0; color:#14213d; background:linear-gradient(#ffe585,#ffc842); }
 .secondary { border:1px solid var(--line); color:white; background:#143762; }
 
-@keyframes shake { 25%{transform:translate(calc(-50% - 7px),-50%)} 75%{transform:translate(calc(-50% + 7px),-50%)} }
+@keyframes shake { 25%{transform:translate(calc(-50% - 7px),0)} 75%{transform:translate(calc(-50% + 7px),0)} }
 @keyframes enemy-hit {
   18% { transform:translate3d(calc(var(--enemy-x) - 14px),8px,0) rotate(-5deg) scale(var(--enemy-scale)); filter:brightness(1.8); }
   100% { transform:translate3d(calc(var(--enemy-x) + clamp(210px,28vw,430px)),-170px,0) rotate(30deg) scale(.42); opacity:0; }
@@ -293,6 +293,37 @@ h1 { margin: 0; font-size: clamp(2rem, 4.5vw, 4.25rem); line-height: .98; letter
   .enemy-slot { width:150px; height:150px; }
   .training-player, .training-partner { width:165px; height:165px; }
   .training-problem { width:86vw; top:35%; }
+}
+
+/* Tablet landscape: keep the problem, battle action, and finger guide in three clear bands. */
+@media (min-width: 700px) and (max-width: 1180px) and (orientation: landscape) {
+  .hud { gap:12px; padding:6px 18px; }
+  .problem-card { top:2.5%; width:min(820px,82vw); padding:6px 18px; border-radius:17px; }
+  .kana { margin-top:2px; font-size:clamp(2rem,5.5vh,3.8rem); }
+  .romaji { font-size:clamp(1rem,2.35vh,1.45rem); min-height:1.25em; }
+  .input-progress { margin-top:2px; font-size:clamp(1.1rem,2.7vh,1.7rem); min-height:1.25em; }
+  .hint-note { min-height:1.1em; font-size:.72rem; }
+  .enemy-slot { bottom:29%; width:clamp(125px,18vh,195px); height:clamp(125px,18vh,195px); }
+  .enemy-slot.evolved { width:clamp(145px,21vh,225px); height:clamp(145px,21vh,225px); }
+  .enemy-slot.boss { width:clamp(165px,24vh,255px); height:clamp(165px,24vh,255px); }
+  .player-slot { bottom:29%; left:8%; width:clamp(150px,21vh,225px); height:clamp(150px,21vh,225px); }
+  .battle-ground { bottom:28%; height:13%; }
+  .typing-keyboard { bottom:1%; width:min(850px,92vw); padding:7px 12px; }
+  .typing-key-row { gap:clamp(4px,.6vw,8px); margin-bottom:4px; }
+  .typing-key { height:clamp(27px,4.2vh,38px); font-size:clamp(.75rem,1.15vw,.95rem); }
+  .typing-finger-legend { margin-top:5px; font-size:.7rem; gap:4px 16px; }
+}
+/* Portrait tablets keep the same top-to-bottom order without shrinking the guide too far. */
+@media (min-width: 600px) and (max-width: 900px) and (orientation: portrait) {
+  .problem-card { top:2%; width:94vw; padding:10px 14px; }
+  .kana { font-size:clamp(2.1rem,5vh,3.5rem); }
+  .enemy-slot { bottom:33%; width:clamp(125px,17vh,175px); height:clamp(125px,17vh,175px); }
+  .enemy-slot.evolved { width:clamp(145px,20vh,205px); height:clamp(145px,20vh,205px); }
+  .enemy-slot.boss { width:clamp(160px,22vh,225px); height:clamp(160px,22vh,225px); }
+  .player-slot { bottom:33%; left:2%; width:clamp(150px,21vh,210px); height:clamp(150px,21vh,210px); }
+  .battle-ground { bottom:32%; height:13%; }
+  .typing-keyboard { bottom:1%; width:96vw; padding:8px; }
+  .typing-key { height:clamp(27px,3.5vh,36px); font-size:clamp(.75rem,1.6vw,.95rem); }
 }
 
 @media (prefers-reduced-motion: reduce) {
