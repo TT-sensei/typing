@@ -298,11 +298,11 @@ h1 { margin: 0; font-size: clamp(2rem, 4.5vw, 4.25rem); line-height: .98; letter
 /* Tablet landscape: keep the problem, battle action, and finger guide in three clear bands. */
 @media (min-width: 700px) and (max-width: 1180px) and (orientation: landscape) {
   .hud { gap:12px; padding:6px 18px; }
-  .problem-card { top:2.5%; width:min(820px,82vw); padding:6px 18px; border-radius:17px; }
-  .kana { margin-top:1px; font-size:clamp(1.8rem,4.8vh,3.4rem); line-height:1.05; }
-  .romaji { font-size:clamp(.9rem,2vh,1.3rem); min-height:1.15em; }
-  .input-progress { margin-top:1px; font-size:clamp(1rem,2.3vh,1.5rem); min-height:1.15em; }
-  .hint-note { min-height:1.1em; font-size:.72rem; }
+  .problem-card { top:2.5%; width:min(820px,82vw); padding:4px 18px; border-radius:17px; }
+  .kana { margin:0; font-size:clamp(1.8rem,4.8vh,3.4rem); line-height:1.02; }
+  .romaji { font-size:clamp(.9rem,2vh,1.3rem); min-height:0; line-height:1.05; }
+  .input-progress { margin-top:0; font-size:clamp(1rem,2.3vh,1.5rem); min-height:0; line-height:1.05; }
+  .hint-note { min-height:0; line-height:1.05; font-size:.68rem; }
   .enemy-slot { bottom:29%; width:clamp(125px,18vh,195px); height:clamp(125px,18vh,195px); }
   .enemy-slot.evolved { width:clamp(145px,21vh,225px); height:clamp(145px,21vh,225px); }
   .enemy-slot.boss { width:clamp(165px,24vh,255px); height:clamp(165px,24vh,255px); }
@@ -315,10 +315,11 @@ h1 { margin: 0; font-size: clamp(2rem, 4.5vw, 4.25rem); line-height: .98; letter
 }
 /* Portrait tablets keep the same top-to-bottom order without shrinking the guide too far. */
 @media (min-width: 600px) and (max-width: 900px) and (orientation: portrait) {
-  .problem-card { top:2%; width:94vw; padding:10px 14px; }
-  .kana { font-size:clamp(1.9rem,4.5vh,3.2rem); line-height:1.05; }
-  .romaji { font-size:clamp(1rem,2.1vh,1.35rem); }
-  .input-progress { font-size:clamp(1.05rem,2.4vh,1.5rem); }
+  .problem-card { top:2%; width:94vw; padding:7px 14px; }
+  .kana { margin:0; font-size:clamp(1.9rem,4.5vh,3.2rem); line-height:1.03; }
+  .romaji { font-size:clamp(1rem,2.1vh,1.35rem); min-height:0; line-height:1.05; }
+  .input-progress { margin-top:1px; font-size:clamp(1.05rem,2.4vh,1.5rem); min-height:0; line-height:1.05; }
+  .hint-note { min-height:0; line-height:1.05; }
   .enemy-slot { bottom:33%; width:clamp(125px,17vh,175px); height:clamp(125px,17vh,175px); }
   .enemy-slot.evolved { width:clamp(145px,20vh,205px); height:clamp(145px,20vh,205px); }
   .enemy-slot.boss { width:clamp(160px,22vh,225px); height:clamp(160px,22vh,225px); }
