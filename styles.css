@@ -142,7 +142,7 @@ h1 { margin: 0; font-size: clamp(2rem, 4.5vw, 4.25rem); line-height: .98; letter
 .enemy-slot img { width:100%; height:100%; object-fit:contain; filter: drop-shadow(0 10px 8px rgba(0,0,0,.38)); }
 .enemy-slot.hit { animation: enemy-hit .42s cubic-bezier(.18,.72,.22,1) both; }
 .enemy-slot.attack { animation: enemy-attack .26s ease-in-out; }
-.player-slot { position:absolute; z-index:2; bottom:31%; left:9%; width:clamp(175px,27vh,300px); height:clamp(175px,27vh,300px); }
+.player-slot { position:absolute; z-index:2; bottom:31%; left:9%; width:clamp(205px,31vh,340px); height:clamp(205px,31vh,340px); }
 .player-slot img { width:100%; height:100%; object-fit:contain; object-position:bottom; filter:drop-shadow(0 10px 9px rgba(0,0,0,.38)); }
 .player-slot.action { animation:player-action .48s ease-out both; }
 .player-slot.special-action { animation:player-special .68s cubic-bezier(.2,.9,.25,1) both; }
@@ -298,7 +298,7 @@ h1 { margin: 0; font-size: clamp(2rem, 4.5vw, 4.25rem); line-height: .98; letter
   .hud { grid-template-columns:repeat(4,1fr) auto; }
   .hud-stat:first-child { display:none; }
   .problem-card { width:90vw; top:13%; }
-  .player-slot { width:185px; height:185px; }
+  .player-slot { width:205px; height:205px; }
   .enemy-slot { width:150px; height:150px; }
   .problem-card { top:9%; }
   .training-player, .training-partner { width:165px; height:165px; }
@@ -318,7 +318,7 @@ h1 { margin: 0; font-size: clamp(2rem, 4.5vw, 4.25rem); line-height: .98; letter
   .enemy-slot { bottom:29%; width:clamp(125px,18vh,195px); height:clamp(125px,18vh,195px); }
   .enemy-slot.evolved { width:clamp(145px,21vh,225px); height:clamp(145px,21vh,225px); }
   .enemy-slot.boss { width:clamp(165px,24vh,255px); height:clamp(165px,24vh,255px); }
-  .player-slot { bottom:29%; left:8%; width:clamp(175px,25vh,265px); height:clamp(175px,25vh,265px); }
+  .player-slot { bottom:29%; left:7%; width:clamp(195px,29vh,300px); height:clamp(195px,29vh,300px); }
   .battle-ground { bottom:28%; height:13%; }
   .typing-keyboard { bottom:1%; width:min(850px,92vw); padding:7px 12px; }
   .typing-key-row { gap:clamp(4px,.6vw,8px); margin-bottom:4px; }
@@ -337,7 +337,7 @@ h1 { margin: 0; font-size: clamp(2rem, 4.5vw, 4.25rem); line-height: .98; letter
   .enemy-slot { bottom:33%; width:clamp(125px,17vh,175px); height:clamp(125px,17vh,175px); }
   .enemy-slot.evolved { width:clamp(145px,20vh,205px); height:clamp(145px,20vh,205px); }
   .enemy-slot.boss { width:clamp(160px,22vh,225px); height:clamp(160px,22vh,225px); }
-  .player-slot { bottom:33%; left:2%; width:clamp(170px,24vh,235px); height:clamp(170px,24vh,235px); }
+  .player-slot { bottom:33%; left:1%; width:clamp(190px,27vh,265px); height:clamp(190px,27vh,265px); }
   .battle-ground { bottom:32%; height:13%; }
   .typing-keyboard { bottom:1%; width:96vw; padding:8px; }
   .typing-key { height:clamp(27px,3.5vh,36px); font-size:clamp(.75rem,1.6vw,.95rem); }
