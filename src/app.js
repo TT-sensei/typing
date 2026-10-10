@@ -272,13 +272,31 @@ class Battle {
         <div class="battle-ground" aria-hidden="true"></div>
         <div class="enemy-slot" id="enemy"><img alt="敵モンスター"></div>
         <div class="problem-card" id="problem-card"><span class="mode-chip">${MODE_INFO[this.mode].name}</span><div class="kana" id="kana">準備</div><div class="romaji" id="romaji"></div><div class="input-progress" id="input"></div><div class="hint-note" id="hint"></div></div>
+        <div class="typing-keyboard" id="typing-keyboard" aria-label="指ごとに色分けしたキーボード図"></div>
         <div class="player-slot" id="player"><img src="${charUrl(this.character)}" alt="${this.character.name}・${this.character.job}"></div>
         <div class="battle-message countdown" id="message">3</div>
       </div>
     </section>`;
-    this.el={arena:app.querySelector('#arena'),enemy:app.querySelector('#enemy'),enemyImg:app.querySelector('#enemy img'),player:app.querySelector('#player'),playerImg:app.querySelector('#player img'),card:app.querySelector('#problem-card'),kana:app.querySelector('#kana'),romaji:app.querySelector('#romaji'),input:app.querySelector('#input'),hint:app.querySelector('#hint'),message:app.querySelector('#message'),hp:app.querySelector('#hp'),score:app.querySelector('#score'),combo:app.querySelector('#combo'),time:app.querySelector('#time')};
+    this.el={arena:app.querySelector('#arena'),enemy:app.querySelector('#enemy'),enemyImg:app.querySelector('#enemy img'),player:app.querySelector('#player'),playerImg:app.querySelector('#player img'),card:app.querySelector('#problem-card'),kana:app.querySelector('#kana'),romaji:app.querySelector('#romaji'),input:app.querySelector('#input'),keyboard:app.querySelector('#typing-keyboard'),hint:app.querySelector('#hint'),message:app.querySelector('#message'),hp:app.querySelector('#hp'),score:app.querySelector('#score'),combo:app.querySelector('#combo'),time:app.querySelector('#time')};
+    this.buildKeyboard();
     app.querySelector('#exit').onclick=()=>this.finish('END');
     window.addEventListener('keydown',this.keyHandler);
+  }
+  buildKeyboard(){
+    const rows=[
+      [['Q',1],['W',2],['E',3],['R',4],['T',4],['Y',4],['U',4],['I',3],['O',2],['P',1]],
+      [['A',1],['S',2],['D',3],['F',4],['G',4],['H',4],['J',4],['K',3],['L',2],["'",1]],
+      [['Z',1],['X',2],['C',3],['V',4],['B',4],['N',4],['M',4],['-',1]]
+    ];
+    this.el.keyboard.innerHTML=rows.map(row=>'<div class="typing-key-row">'+row.map(([key,finger])=>'<span class="typing-key finger-'+finger+'" data-key="'+key+'">'+(key==="'"?'’':key)+'</span>').join('')+'</div>').join('')+
+      '<div class="typing-finger-legend"><span><i class="finger-dot finger-1"></i>小指</span><span><i class="finger-dot finger-2"></i>薬指</span><span><i class="finger-dot finger-3"></i>中指</span><span><i class="finger-dot finger-4"></i>人差し指</span></div>';
+    this.keyboardKeys=[...this.el.keyboard.querySelectorAll('[data-key]')];
+  }
+  updateKeyboard(){
+    if(!this.keyboardKeys) return;
+    const typed=(this.typed||'').toLowerCase();
+    const nextKeys=new Set((this.question?.accepts||[]).filter(word=>word.startsWith(typed)).map(word=>word[typed.length]?.toUpperCase()).filter(Boolean));
+    this.keyboardKeys.forEach(key=>key.classList.toggle('next-key',nextKeys.has(key.dataset.key)));
   }
   countdown() {
     let n=3;
@@ -381,6 +399,7 @@ class Battle {
     const reference=this.question?.display||'';
     const remaining=this.showRomaji?reference.slice(Math.min(this.guideOffset??this.typed.length,reference.length)):'';
     this.el.input.innerHTML=`<span class="typed">${escapeHtml(this.typed)}</span><span class="remaining">${escapeHtml(remaining)}</span>`;
+    this.updateKeyboard();
   }
   completeQuestion(){
     this.locked=true; this.combo++; this.maxCombo=Math.max(this.maxCombo,this.combo); this.kills++;
