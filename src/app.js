@@ -178,6 +178,7 @@ class Training {
         <div class="battle-ground" aria-hidden="true"></div>
         <div class="player-slot training-player" id="training-player"><img src="${charUrl(this.character)}" alt="${this.character.name}・${this.character.job}"></div>
         <div class="training-partner" id="training-partner"><img src="${charUrl(this.partner)}" alt="特訓相手の${this.partner.name}・${this.partner.job}"><span>${this.partner.name}と特訓！</span></div>
+        <div class="typing-keyboard training-keyboard notranslate" id="training-keyboard" aria-label="指ごとに色分けしたキーボード図" translate="no"></div>
         <div class="problem-card training-problem" id="problem-card">
           <span class="mode-chip">時間制限なし</span>
           <div class="kana" id="kana"></div><div class="romaji notranslate" id="romaji" translate="no"></div><div class="input-progress notranslate" id="input" translate="no"></div>
@@ -187,7 +188,8 @@ class Training {
         <div class="training-message" id="training-message">${this.fallback?'基礎データからスタート！':'苦手をいっしょに克服しよう！'}</div>
       </div>
     </section>`;
-    this.el={card:app.querySelector('#problem-card'),kana:app.querySelector('#kana'),romaji:app.querySelector('#romaji'),input:app.querySelector('#input'),hint:app.querySelector('#hint'),clears:app.querySelector('#training-clears'),streak:app.querySelector('#training-streak'),player:app.querySelector('#training-player'),partner:app.querySelector('#training-partner'),message:app.querySelector('#training-message')};
+    this.el={card:app.querySelector('#problem-card'),kana:app.querySelector('#kana'),romaji:app.querySelector('#romaji'),input:app.querySelector('#input'),hint:app.querySelector('#hint'),clears:app.querySelector('#training-clears'),streak:app.querySelector('#training-streak'),player:app.querySelector('#training-player'),partner:app.querySelector('#training-partner'),keyboard:app.querySelector('#training-keyboard'),message:app.querySelector('#training-message')};
+    this.buildKeyboard();
     app.querySelector('#stop-training').onclick=()=>this.stop();
     window.addEventListener('keydown',this.keyHandler);
     this.nextQuestion();
@@ -204,6 +206,7 @@ class Training {
     this.el.romaji.textContent=this.guided?this.question.display:'';
     this.el.hint.textContent=this.guided?'まずは見ながら打ってみよう':'思い出して打ってみよう（3回まちがえると答えが出るよ）';
     this.updateInput();
+    this.updateKeyboard();
   }
   onKey(e) {
     if(!this.running||this.locked||e.ctrlKey||e.metaKey||e.altKey||e.isComposing) return;
@@ -219,8 +222,24 @@ class Training {
       }
       Storage.save(data); return;
     }
-    this.typed=result.value; this.guideOffset=result.guideOffset; this.correctKeys++; data.totals.totalKeys++; audio.key(); this.updateInput(); Storage.save(data);
+    this.typed=result.value; this.guideOffset=result.guideOffset; this.correctKeys++; data.totals.totalKeys++; audio.key(); this.updateInput(); this.updateKeyboard(); Storage.save(data);
     if(result.complete) this.completeQuestion();
+  }
+  buildKeyboard(){
+    const rows=[
+      [['Q',1],['W',2],['E',3],['R',4],['T',4],['Y',4],['U',4],['I',3],['O',2],['P',1]],
+      [['A',1],['S',2],['D',3],['F',4],['G',4],['H',4],['J',4],['K',3],['L',2],["'",1]],
+      [['Z',1],['X',2],['C',3],['V',4],['B',4],['N',4],['M',4],['-',1]]
+    ];
+    this.el.keyboard.innerHTML=rows.map(row=>'<div class="typing-key-row">'+row.map(([key,finger])=>'<span class="typing-key finger-'+finger+'" data-key="'+key+'">'+(key==="'"?'’':key)+'</span>').join('')+'</div>').join('')+
+      '<div class="typing-finger-legend"><span><i class="finger-dot finger-1"></i>小指</span><span><i class="finger-dot finger-2"></i>薬指</span><span><i class="finger-dot finger-3"></i>中指</span><span><i class="finger-dot finger-4"></i>人差し指</span></div>';
+    this.keyboardKeys=[...this.el.keyboard.querySelectorAll('[data-key]')];
+  }
+  updateKeyboard(){
+    if(!this.keyboardKeys) return;
+    const typed=(this.typed||'').toLowerCase();
+    const nextKeys=new Set((this.question?.accepts||[]).filter(word=>word.startsWith(typed)).map(word=>word[typed.length]?.toUpperCase()).filter(Boolean));
+    this.keyboardKeys.forEach(key=>key.classList.toggle('next-key',nextKeys.has(key.dataset.key)));
   }
   updateInput() {
     const showRemaining=this.guided||this.rescued;
