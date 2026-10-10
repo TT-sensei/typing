@@ -56,10 +56,10 @@ test('すべての出題データで表示ローマ字をそのまま入力で�
     let typed='';
     for(const key of question.display) {
       const result=typeKey(question,typed,key);
-      assert.equal(result.ok,true,\`入力できない表示：\${kana} / \${typed+key}\`);
+      assert.equal(result.ok,true,`入力できない表示：${kana} / ${typed+key}`);
       typed=result.value;
     }
-    assert.ok(question.accepts.length>0,\`入力候補がない：\${kana}\`);
-    assert.equal(typeKey(question,typed,'').complete,true,\`最後まで完成しない：\${kana}\`);
+    assert.ok(question.accepts.length>0,`入力候補がない：${kana}`);
+    assert.equal(typeKey(question,typed,'').complete,true,`最後まで完成しない：${kana}`);
   }
 });
