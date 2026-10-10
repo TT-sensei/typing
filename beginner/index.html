@@ -66,6 +66,14 @@ h1{color:#fff5d8;text-shadow:0 3px 18px #0008}.sub{color:#d1def4}
 .key{background:#e9eef8;color:#233650;border-color:#b7c5dd;border-bottom-color:#8495b1}
 .key.home{border-color:#83a7ed}.key.active{background:#ffe17a!important;border-color:#e4b52e;color:#352c15;box-shadow:0 0 16px #ffdc7866}
 .key.done{background:#b9f0d9;border-color:#63c59c;color:#153c34}
+/* 指の置き場所は、ファンタジー配色の上でも指ごとに見分けられるようにする */
+.key.finger-1{background:#f6d8c4;color:#3b2a24;border-color:#d5a58a}
+.key.finger-2{background:#c9f0df;color:#183c31;border-color:#81c5aa}
+.key.finger-3{background:#ffedb2;color:#473719;border-color:#d9bd68}
+.key.finger-4{background:#d9d5ff;color:#302c59;border-color:#aaa2e8}
+.key.finger-5{background:#e9d2f5;color:#482858;border-color:#c49bd9}
+.key.home{border-width:2px 1px 4px;border-color:#ffdc78;box-shadow:inset 0 0 0 1px #fff4c5}
+.key.anchor{outline:3px solid #ffdc78;outline-offset:2px;box-shadow:0 0 16px #ffdc7866}
 .key-legend{color:#c2cfe6}.dot{box-shadow:0 0 0 1px #ffffff22}
 .target{color:#fff5dc}.target span{color:#ffdf78}.status{color:#c2d2ec}
 .btn{background:#172d50;color:#f7f0df;border-color:#4a6082}.btn.primary{background:linear-gradient(#ffe99b,#e9bd51);color:#29334b;border-color:#e9bd51;box-shadow:0 4px 0 #9d7428}
@@ -108,7 +116,7 @@ const lessons=[
 let lessonIndex=0,stepIndex=0,hint=false;
 const keyboard=document.getElementById('keyboard');
 const keyEls=new Map();
-rows.forEach((row,ri)=>{const el=document.createElement('div');el.className='key-row';row.forEach(o=>{const b=document.createElement('div');b.className='key finger-'+o.f+(o.h?' home':'');b.dataset.key=o.k;b.textContent=o.k;if(o.k==='F'||o.k==='J')b.title='人差し指・突起の目印';el.appendChild(b);keyEls.set(o.k,b)});keyboard.appendChild(el)});
+rows.forEach((row,ri)=>{const el=document.createElement('div');el.className='key-row';row.forEach(o=>{const b=document.createElement('div');b.className='key finger-'+o.f+(o.h?' home':'');b.dataset.key=o.k;b.textContent=o.k;if(o.k==='F'||o.k==='J'){b.title='人差し指・突起の目印';b.classList.add('anchor')}el.appendChild(b);keyEls.set(o.k,b)});keyboard.appendChild(el)});
 const bottom=document.createElement('div');bottom.className='key-row';const space=document.createElement('div');space.className='key space finger-5';space.textContent='スペース（親指）';bottom.appendChild(space);keyboard.appendChild(bottom);
 const $=id=>document.getElementById(id);
 function expected(){const l=lessons[lessonIndex];return l.keys[Math.min(stepIndex,l.keys.length-1)]}
@@ -116,7 +124,7 @@ function render(){
 const l=lessons[lessonIndex];document.querySelectorAll('.step').forEach((b,i)=>b.setAttribute('aria-current',String(i===lessonIndex)));
 $('lessonNumber').textContent=lessonIndex+1;$('lessonTitle').textContent=l.title;$('lessonCopy').textContent=l.copy;$('notice').textContent=l.notice;
 keyEls.forEach(k=>k.classList.remove('active','done'));
-if(l.mode==='place'){['F','J','A','S','D','K','L',';'].forEach(k=>keyEls.get(k)?.classList.add('active'));$('target').textContent=l.target;$('status').textContent=hint?'人差し指は F と J。ほかの指は A・S・D と K・L・; に置くよ。':l.status;$('nextButton').textContent='置けた！ 次へ'}
+if(l.mode==='place'){$('target').textContent=l.target;$('status').textContent=hint?'人差し指は F と J。ほかの指は A・S・D と K・L・; に置くよ。':l.status;$('nextButton').textContent='置けた！ 次へ'}
 else{l.keys.slice(0,stepIndex).forEach(k=>keyEls.get(k)?.classList.add('done'));const k=expected();keyEls.get(k)?.classList.add('active');$('target').textContent=l.mode==='vowels'?['「あ」','「い」','「う」','「え」','「お」'][stepIndex]+' を打とう':k+' を押そう';$('status').textContent=hint?'光っているキーを押してね。押したら、指をホームポジションに戻そう。':(l.mode==='vowels'?k+' を押してね。': 'キーボードで '+k+' を押してね。');$('nextButton').textContent=stepIndex===l.keys.length-1?'この練習を終える':'次のキーへ';}
 $('hintButton').textContent=hint?'ヒントを閉じる':'ヒント';
 }
