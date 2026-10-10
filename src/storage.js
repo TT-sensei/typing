@@ -24,8 +24,18 @@ export const Storage={
 };
 
 export function recordQuestion(data, q, success, usedHint=false) {
-  const key=q.display;
-  const stat=data.romajiStats[key] || {attempts:0,successes:0,hints:0,lastSeen:0};
+  // 表示ローマ字が同じかな（例：じ・ぢ）でも、学習記録はかなごとに分ける。
+  const key=q.kana || q.display;
+  let stat=data.romajiStats[key];
+  // 以前は表示ローマ字をキーにしていたため、同じかなの既存記録だけ引き継ぐ。
+  if(!stat) {
+    const legacy=data.romajiStats[q.display];
+    if(legacy && legacy.kana===q.kana) {
+      stat=legacy;
+      delete data.romajiStats[q.display];
+    }
+  }
+  stat ||= {attempts:0,successes:0,hints:0,lastSeen:0};
   stat.kana=q.kana;
   stat.attempts++;
   if(success) stat.successes++;
