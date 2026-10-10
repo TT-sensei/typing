@@ -149,16 +149,16 @@ h1 { margin: 0; font-size: clamp(2rem, 4.5vw, 4.25rem); line-height: .98; letter
 
 .training-hud { grid-template-columns:repeat(4,1fr); }
 .training-arena::after { background:linear-gradient(180deg,rgba(7,22,47,.12),rgba(7,22,47,.3)); }
-.training-player { left:7%; bottom:3%; width:clamp(220px,39vh,410px); height:clamp(220px,39vh,410px); }
+.training-player { left:6%; bottom:3%; width:clamp(240px,46vh,470px); height:clamp(240px,46vh,470px); }
 .training-partner {
-  position:absolute; z-index:2; right:7%; bottom:3%; width:clamp(220px,39vh,410px); height:clamp(220px,39vh,410px);
+  position:absolute; z-index:2; right:6%; bottom:3%; width:clamp(220px,41vh,430px); height:clamp(220px,41vh,430px);
 }
 .training-partner img { width:100%; height:100%; object-fit:contain; object-position:bottom; transform:scaleX(-1); filter:drop-shadow(0 10px 9px rgba(0,0,0,.38)); }
 .training-partner span {
   position:absolute; left:50%; bottom:3%; transform:translateX(-50%); white-space:nowrap; padding:5px 12px; border-radius:999px;
   color:#082b31; background:#a5f3d0; font-size:.8rem; font-weight:1000; box-shadow:0 4px 12px rgba(0,0,0,.24);
 }
-.training-problem { top:38%; width:min(600px,50vw); border-color:rgba(124,240,179,.5); }
+.training-problem { top:29%; width:min(600px,50vw); border-color:rgba(124,240,179,.5); }
 .training-keyboard {
   z-index:4; bottom:2%; width:min(560px,48vw); padding:5px 8px; border-radius:12px;
   background:rgba(7,20,39,.94);
@@ -299,8 +299,9 @@ h1 { margin: 0; font-size: clamp(2rem, 4.5vw, 4.25rem); line-height: .98; letter
   .problem-card { width:90vw; top:13%; }
   .player-slot { width:155px; height:155px; }
   .enemy-slot { width:150px; height:150px; }
-  .training-player, .training-partner { width:165px; height:165px; }
-  .training-problem { width:86vw; top:35%; }
+  .training-player { width:190px; height:190px; }
+  .training-partner { width:175px; height:175px; }
+  .training-problem { width:86vw; top:29%; }
   .training-keyboard { width:90vw; bottom:1%; padding:5px 7px; }
   .training-keyboard .typing-key { height:clamp(19px,3vh,25px); }
 }
