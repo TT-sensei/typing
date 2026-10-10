@@ -140,7 +140,7 @@ function startTraining(selection=trainingQuestions()) {
   const partner=partners[Math.floor(Math.random()*partners.length)];
   preloadBattleAssets(character);
   preloadBattleAssets(partner);
-  game=new Training({character,partner,pool:selection.pool,weakCount:selection.weakCount,fallback:selection.fallback});
+  game=new Training({character,partner,...selection});
   game.render();
 }
 
