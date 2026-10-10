@@ -180,7 +180,7 @@ class Training {
         <div class="training-partner" id="training-partner"><img src="${charUrl(this.partner)}" alt="特訓相手の${this.partner.name}・${this.partner.job}"><span>${this.partner.name}と特訓！</span></div>
         <div class="problem-card training-problem" id="problem-card">
           <span class="mode-chip">時間制限なし</span>
-          <div class="kana" id="kana"></div><div class="romaji" id="romaji"></div><div class="input-progress" id="input"></div>
+          <div class="kana" id="kana"></div><div class="romaji notranslate" id="romaji" translate="no"></div><div class="input-progress notranslate" id="input" translate="no"></div>
           <div class="hint-note" id="hint"></div>
           <button class="training-stop" id="stop-training">特訓をやめる</button>
         </div>
@@ -271,7 +271,7 @@ class Battle {
       <div class="arena" id="arena" style="background-image:url('${ASSET_BASE}/backgrounds/${background}.webp')">
         <div class="battle-ground" aria-hidden="true"></div>
         <div class="enemy-slot" id="enemy"><img alt="敵モンスター"></div>
-        <div class="problem-card" id="problem-card"><span class="mode-chip">${MODE_INFO[this.mode].name}</span><div class="kana" id="kana">準備</div><div class="romaji" id="romaji"></div><div class="input-progress" id="input"></div><div class="hint-note" id="hint"></div></div>
+        <div class="problem-card" id="problem-card"><span class="mode-chip">${MODE_INFO[this.mode].name}</span><div class="kana" id="kana">準備</div><div class="romaji notranslate" id="romaji" translate="no"></div><div class="input-progress notranslate" id="input" translate="no"></div><div class="hint-note" id="hint"></div></div>
         <div class="typing-keyboard" id="typing-keyboard" aria-label="指ごとに色分けしたキーボード図"></div>
         <div class="player-slot" id="player"><img src="${charUrl(this.character)}" alt="${this.character.name}・${this.character.job}"></div>
         <div class="battle-message countdown" id="message">3</div>
