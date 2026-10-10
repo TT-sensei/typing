@@ -440,3 +440,36 @@ h1 { font-size: clamp(1.85rem, 4vw, 3.7rem); }
   .practice-grid, .mode-grid.battle-grid { grid-template-columns:minmax(0,1fr); }
   .mode-card { padding:14px; }
 }
+
+
+/* Give the two practice choices room to breathe on narrower desktop windows and tablets. */
+.practice-grid { gap:14px; }
+.practice-card, .weakness-card {
+  padding:18px 22px;
+  gap:0;
+}
+.practice-card .mode-label, .weakness-card .mode-label {
+  font-size:clamp(1.25rem,2vw,1.65rem);
+  line-height:1.35;
+  letter-spacing:normal;
+  overflow-wrap:normal;
+  word-break:keep-all;
+}
+.practice-card .mode-desc, .weakness-card .mode-desc {
+  margin-top:9px;
+  line-height:1.55;
+}
+.practice-card .best, .weakness-card .best {
+  margin-top:12px;
+  line-height:1.4;
+}
+@media (max-width:900px) {
+  .practice-grid { grid-template-columns:minmax(0,1fr); }
+  .practice-card, .weakness-card { padding:16px 20px; }
+}
+@media (max-width:560px) {
+  .practice-grid { grid-template-columns:minmax(0,1fr); gap:10px; }
+  .practice-card, .weakness-card { padding:15px 16px; }
+  .practice-card .mode-label, .weakness-card .mode-label { font-size:1.15rem; }
+  .practice-card .mode-desc, .weakness-card .mode-desc { font-size:.82rem; line-height:1.5; }
+}
