@@ -350,10 +350,10 @@ h1 { margin: 0; font-size: clamp(2rem, 4.5vw, 4.25rem); line-height: .98; letter
 }
 
 /* 次に押すキーは、光り方に加えて担当する指の色で枠を強調 */
-.typing-key.next-key.finger-1 { border-color:#d58b60; box-shadow:0 0 0 2px #f6d8c466,0 0 14px #f6d8c4aa; }
-.typing-key.next-key.finger-2 { border-color:#54b38b; box-shadow:0 0 0 2px #c9f0df66,0 0 14px #c9f0dfaa; }
-.typing-key.next-key.finger-3 { border-color:#c49d28; box-shadow:0 0 0 2px #ffedb266,0 0 14px #ffedb2aa; }
-.typing-key.next-key.finger-4 { border-color:#8174dc; box-shadow:0 0 0 2px #d9d5ff66,0 0 14px #d9d5ffaa; }
+.typing-key.next-key.finger-1 { border:3px solid #d58b60; box-shadow:none; }
+.typing-key.next-key.finger-2 { border:3px solid #54b38b; box-shadow:none; }
+.typing-key.next-key.finger-3 { border:3px solid #c49d28; box-shadow:none; }
+.typing-key.next-key.finger-4 { border:3px solid #8174dc; box-shadow:none; }
 
 /* Start screen: practice choices first, then the four battle modes. */
 h1 { font-size: clamp(1.85rem, 4vw, 3.7rem); }
