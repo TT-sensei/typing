@@ -394,10 +394,8 @@ class Battle {
   }
   positionEnemy(p){
     const x=this.qStartX+(this.qTargetX-this.qStartX)*p;
-    const scales=this.monster?.category==='boss'?[1,1.12]:this.monster?.category==='evolved'?[.9,1.12]:[.72,1.08];
-    const scale=scales[0]+p*(scales[1]-scales[0]);
     this.el.enemy.style.setProperty('--enemy-x',`${x}px`);
-    this.el.enemy.style.setProperty('--enemy-scale',scale.toFixed(3));
+    this.el.enemy.style.setProperty('--enemy-scale','1');
   }
   showHint(stage){
     if(!this.usedHint) this.hints++;
