@@ -354,3 +354,31 @@ h1 { margin: 0; font-size: clamp(2rem, 4.5vw, 4.25rem); line-height: .98; letter
 .typing-key.next-key.finger-2 { border-color:#54b38b; box-shadow:0 0 0 2px #c9f0df66,0 0 14px #c9f0dfaa; }
 .typing-key.next-key.finger-3 { border-color:#c49d28; box-shadow:0 0 0 2px #ffedb266,0 0 14px #ffedb2aa; }
 .typing-key.next-key.finger-4 { border-color:#8174dc; box-shadow:0 0 0 2px #d9d5ff66,0 0 14px #d9d5ffaa; }
+
+/* Start screen: practice choices first, then the four battle modes. */
+h1 { font-size: clamp(1.85rem, 4vw, 3.7rem); }
+.practice-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.practice-card { min-height: 118px; border-color: rgba(124,240,179,.28); background: linear-gradient(145deg,rgba(8,52,66,.96),rgba(17,72,75,.88)); }
+.practice-card .mode-label { color: #bdfbe0; }
+.weakness-card { min-height: 118px; background: linear-gradient(145deg,rgba(16,69,73,.96),rgba(21,91,91,.88)); border-color: rgba(124,240,179,.28); }
+.practice-card .best, .weakness-card .best { bottom: 12px; }
+.battle-section-label { margin: 18px 2px 10px; }
+.battle-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (max-width: 900px) {
+  .mode-grid.battle-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .mode-card { min-height: 145px; padding: 16px; }
+}
+@media (max-width: 560px) {
+  .hero { min-height: 154px; grid-template-columns: 1fr minmax(100px, 34%); padding: 18px; border-radius: 20px; }
+  .hero-art { width: 43%; right: -3%; bottom: -8%; }
+  h1 { font-size: clamp(1.55rem, 6vw, 2.2rem); }
+  .hero p { max-width: 68%; font-size: .78rem; margin-top: 9px; }
+  .eyebrow { font-size: .68rem; }
+  .toolbar { margin: 10px 2px; }
+  .practice-grid, .mode-grid.battle-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+  .mode-card { min-height: 126px; padding: 13px; border-radius: 16px; }
+  .mode-label { font-size: 1.12rem; }
+  .mode-desc { margin-top: 5px; font-size: .78rem; line-height: 1.35; }
+  .best { left: 13px; bottom: 10px; font-size: .72rem; }
+  .battle-section-label { margin-top: 13px; margin-bottom: 8px; }
+}
