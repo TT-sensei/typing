@@ -231,7 +231,7 @@ class Training {
       [['A',1],['S',2],['D',3],['F',4],['G',4],['H',4],['J',4],['K',3],['L',2],["'",1]],
       [['Z',1],['X',2],['C',3],['V',4],['B',4],['N',4],['M',4],['-',1]]
     ];
-    this.el.keyboard.innerHTML=rows.map(row=>'<div class="typing-key-row">'+row.map(([key,finger])=>'<span class="typing-key finger-'+finger+'" data-key="'+key+'">'+(key==="'"?'’':key)+'</span>').join('')+'</div>').join('')+
+    this.el.keyboard.innerHTML=rows.map(row=>'<div class="typing-key-row">'+row.map(([key,finger])=>'<span class="typing-key finger-'+finger+'" data-key="'+key+'">'+(key==="'"?"'":key)+'</span>').join('')+'</div>').join('')+
       '<div class="typing-finger-legend"><span><i class="finger-dot finger-1"></i>小指</span><span><i class="finger-dot finger-2"></i>薬指</span><span><i class="finger-dot finger-3"></i>中指</span><span><i class="finger-dot finger-4"></i>人差し指</span></div>';
     this.keyboardKeys=[...this.el.keyboard.querySelectorAll('[data-key]')];
   }
@@ -307,7 +307,7 @@ class Battle {
       [['A',1],['S',2],['D',3],['F',4],['G',4],['H',4],['J',4],['K',3],['L',2],["'",1]],
       [['Z',1],['X',2],['C',3],['V',4],['B',4],['N',4],['M',4],['-',1]]
     ];
-    this.el.keyboard.innerHTML=rows.map(row=>'<div class="typing-key-row">'+row.map(([key,finger])=>'<span class="typing-key finger-'+finger+'" data-key="'+key+'">'+(key==="'"?'’':key)+'</span>').join('')+'</div>').join('')+
+    this.el.keyboard.innerHTML=rows.map(row=>'<div class="typing-key-row">'+row.map(([key,finger])=>'<span class="typing-key finger-'+finger+'" data-key="'+key+'">'+(key==="'"?"'":key)+'</span>').join('')+'</div>').join('')+
       '<div class="typing-finger-legend"><span><i class="finger-dot finger-1"></i>小指</span><span><i class="finger-dot finger-2"></i>薬指</span><span><i class="finger-dot finger-3"></i>中指</span><span><i class="finger-dot finger-4"></i>人差し指</span></div>';
     this.keyboardKeys=[...this.el.keyboard.querySelectorAll('[data-key]')];
   }
