@@ -159,6 +159,13 @@ h1 { margin: 0; font-size: clamp(2rem, 4.5vw, 4.25rem); line-height: .98; letter
   color:#082b31; background:#a5f3d0; font-size:.8rem; font-weight:1000; box-shadow:0 4px 12px rgba(0,0,0,.24);
 }
 .training-problem { top:38%; width:min(600px,50vw); border-color:rgba(124,240,179,.5); }
+.training-keyboard {
+  z-index:4; bottom:2%; width:min(560px,48vw); padding:5px 8px; border-radius:12px;
+  background:rgba(7,20,39,.94);
+}
+.training-keyboard .typing-key-row { gap:clamp(2px,.35vw,5px); margin-bottom:3px; }
+.training-keyboard .typing-key { height:clamp(20px,3vh,30px); font-size:clamp(.58rem,.9vw,.78rem); }
+.training-keyboard .typing-finger-legend { margin-top:3px; font-size:clamp(.48rem,.65vw,.6rem); gap:2px 9px; }
 .training-stop {
   width:100%; min-height:43px; margin-top:9px; border:1px solid rgba(255,255,255,.25); border-radius:13px; cursor:pointer;
   color:white; background:rgba(255,255,255,.09); font-weight:1000;
@@ -282,6 +289,7 @@ h1 { margin: 0; font-size: clamp(2rem, 4.5vw, 4.25rem); line-height: .98; letter
   .training-player { left:1%; }
   .training-partner { right:1%; }
   .training-problem { width:min(620px,64vw); }
+  .training-keyboard { width:min(540px,48vw); bottom:2%; }
 }
 
 @media (orientation: portrait) and (max-width: 600px) {
@@ -293,6 +301,8 @@ h1 { margin: 0; font-size: clamp(2rem, 4.5vw, 4.25rem); line-height: .98; letter
   .enemy-slot { width:150px; height:150px; }
   .training-player, .training-partner { width:165px; height:165px; }
   .training-problem { width:86vw; top:35%; }
+  .training-keyboard { width:90vw; bottom:1%; padding:5px 7px; }
+  .training-keyboard .typing-key { height:clamp(19px,3vh,25px); }
 }
 
 /* Tablet landscape: keep the problem, battle action, and finger guide in three clear bands. */
@@ -312,6 +322,8 @@ h1 { margin: 0; font-size: clamp(2rem, 4.5vw, 4.25rem); line-height: .98; letter
   .typing-key-row { gap:clamp(4px,.6vw,8px); margin-bottom:4px; }
   .typing-key { height:clamp(27px,4.2vh,38px); font-size:clamp(.75rem,1.15vw,.95rem); }
   .typing-finger-legend { margin-top:5px; font-size:.7rem; gap:4px 16px; }
+  .training-keyboard { width:min(560px,48vw); bottom:2%; padding:4px 7px; }
+  .training-keyboard .typing-key { height:clamp(20px,3vh,28px); }
 }
 /* Portrait tablets keep the same top-to-bottom order without shrinking the guide too far. */
 @media (min-width: 600px) and (max-width: 900px) and (orientation: portrait) {
@@ -327,6 +339,8 @@ h1 { margin: 0; font-size: clamp(2rem, 4.5vw, 4.25rem); line-height: .98; letter
   .battle-ground { bottom:32%; height:13%; }
   .typing-keyboard { bottom:1%; width:96vw; padding:8px; }
   .typing-key { height:clamp(27px,3.5vh,36px); font-size:clamp(.75rem,1.6vw,.95rem); }
+  .training-keyboard { width:90vw; bottom:1%; padding:5px 7px; }
+  .training-keyboard .typing-key { height:clamp(20px,2.8vh,28px); }
 }
 
 @media (prefers-reduced-motion: reduce) {
