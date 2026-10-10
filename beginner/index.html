@@ -105,7 +105,7 @@ const rows=[
 [{k:'Z',f:1},{k:'X',f:2},{k:'C',f:3},{k:'V',f:4},{k:'B',f:4},{k:'N',f:4},{k:'M',f:4},{k:',',f:3},{k:'.',f:2},{k:'/',f:1}],
 ];
 const lessons=[
-{title:'ホームポジションを見つけよう',copy:'まずは F と J の小さな突起を指で探そう。画面を見なくても場所が分かる目印だよ。',target:'指を F と J に置こう',status:'F と J のキーを見つけて、突起を確かめよう。',keys:['F','J'],mode:'place',notice:'まだキーを押さなくてOK。FとJに人差し指を置き、ほかの指は A・S・D と K・L・; にそっと置こう。',short:'指を置こう'},
+{title:'ホームポジションを見つけよう',copy:'まずは F と J の小さな突起を指で探そう。画面を見なくても場所が分かる目印だよ。',target:'指を F と J に置こう',status:'指を置けたら、スペースキーを押して次へ進もう。',keys:['F','J'],mode:'place',notice:'① FとJに人差し指を置こう。② ほかの指を A・S・D と K・L・; に置こう。③ 置けたらスペースキーを押して次へ！',short:'指を置こう'},
 {title:'ホームポジションのキーを押そう',copy:'指を置いたまま、枠がついているキーを順番に押してみよう。押したら、指を元の場所に戻そう。',target:'まずは A を押そう',status:'キーボードで A を押してね。',keys:['A','S','D','F','J','K','L',';'],mode:'type',notice:'正しいキーを押すと次に進むよ。まちがえても大丈夫。ゆっくりやってみよう。',short:'ホームのキー'},
 {title:'小指をのばしてみよう',copy:'左手と右手を交互に使って、上・ホーム・下の段へ動かそう。打ったら、指をホームポジションに戻すよ。',target:'左手の Q を押そう',status:'左手 → 右手 → 左手 → 右手の順に進むよ。',keys:['Q','P','A',';','Z','/'],mode:'finger',finger:'小指',notice:'小指の練習。Q・P（上の段）、A・;（ホーム）、Z・/（下の段）を左右交互に打とう。'},
 {title:'薬指をのばしてみよう',copy:'薬指で左手・右手を交互に打とう。上の段、ホーム、下の段と移動してみよう。',target:'左手の W を押そう',status:'左手 → 右手 → 左手 → 右手の順に進むよ。',keys:['W','O','S','L','X','.'],mode:'finger',finger:'薬指',notice:'薬指の練習。W・O、S・L、X・. を左右交互に打とう。'},
@@ -133,7 +133,7 @@ $('hintButton').textContent=hint?'ヒントを閉じる':'ヒント';
 function next(){const l=lessons[lessonIndex];if(l.mode==='place'){lessonIndex++;stepIndex=0;hint=false;render();return}if(stepIndex<l.keys.length-1){stepIndex++;hint=false;render();return}if(lessonIndex<lessons.length-1){lessonIndex++;stepIndex=0;hint=false;render();return}$('target').textContent='練習できたね！';$('status').textContent='すべての練習はおしまい。もう一度練習してもいいよ。';$('nextButton').textContent='最初から';$('nextButton').onclick=()=>{lessonIndex=0;stepIndex=0;hint=false;$('nextButton').onclick=next;render()};}
 $('nextButton').addEventListener('click',next);
 $('hintButton').addEventListener('click',()=>{hint=!hint;render()});
-window.addEventListener('keydown',e=>{if(e.ctrlKey||e.metaKey||e.altKey)return;const l=lessons[lessonIndex];if(e.code==='Space'&&l.mode==='place'){e.preventDefault();next();return}const k=e.key.length===1?e.key.toUpperCase():e.key;if(!keyEls.has(k))return;e.preventDefault();if(l.mode==='place'){if(k==='F'||k==='J'){$('status').textContent='そう！ '+k+' は人差し指の目印だよ。両方の突起を確かめよう。スペースキーで次へ進めるよ。';keyEls.get(k)?.classList.add('done')}return}if(k===expected()){keyEls.get(k)?.classList.add('done');$('status').textContent='いいね！ 指を元の位置に戻そう。';setTimeout(()=>{if(expected()===k)next()},350)}else{$('status').textContent='おしい！ 金色の枠がついているキーを探して、もう一度。'}});
+window.addEventListener('keydown',e=>{if(e.ctrlKey||e.metaKey||e.altKey)return;const l=lessons[lessonIndex];if(e.code==='Space'&&l.mode==='place'){e.preventDefault();next();return}const k=e.key.length===1?e.key.toUpperCase():e.key;if(!keyEls.has(k))return;e.preventDefault();if(l.mode==='place'){if(k==='F'||k==='J'){$('status').textContent='そう！ '+k+' は人差し指の目印だよ。両方の突起を確かめたら、スペースキーを押して次へ！';keyEls.get(k)?.classList.add('done')}return}if(k===expected()){keyEls.get(k)?.classList.add('done');$('status').textContent='いいね！ 指を元の位置に戻そう。';setTimeout(()=>{if(expected()===k)next()},350)}else{$('status').textContent='おしい！ 金色の枠がついているキーを探して、もう一度。'}});
 render();
 })();
 </script>
